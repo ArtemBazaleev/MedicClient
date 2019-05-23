@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#F8615b</color>
+    <color name="colorTest1">#21E9A5</color>
+    <color name="colorTest2">#13CCC8</color>
+    <color name="colorTestBlur1">#4D21E9A5</color>
+    <color name="colorTestBlur2">#4D13CCC8</color>
+
+    <color name="colorDownTest1">#4cacfc</color>
+    <color name="colorDownTest2">#04ecff</color>
+    <color name="colorDownTestBlur1">#4d4cacfc</color>
+    <color name="colorDownTestBlur2">#4d04ecff</color>
+
+    <color name="color_white">#fafafa</color>
+
+    <color name="black_overlay">#66464646</color>
+</resources>
