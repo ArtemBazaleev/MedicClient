@@ -28,7 +28,6 @@ public class MessageNotificationService extends Service {
         mSocket = app.getmSocket();
         mSocket.on("new message", onNewMessage);
         Log.d(this.getClass().getName(),"OnStartCommand");
-        sendNotif("qweqweq","asdasd");
         return super.onStartCommand(intent, flags, startId);
     }
 

@@ -116,18 +116,18 @@
         </android.support.constraint.ConstraintLayout>
 
 
-
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:fontFamily="@font/sf_compact_rounded_bold"
             android:text="Запись"
             android:textAlignment="center"
-            android:textColor="@android:color/background_dark"
-            android:textSize="30sp"
+            android:textColor="@color/default_selected_day_background_start_color"
+            android:textSize="@dimen/header_txt_size"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -137,67 +137,38 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="0dp"
-            android:layout_height="115dp"
-            android:elevation="6dp"
-            android:background="@drawable/shape_card_right"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@drawable/shape_card_right"
+            android:elevation="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="#1A000000"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline11"
-                    app:layout_constraintStart_toStartOf="@+id/guideline10" />
 
-                <EditText
-                    android:id="@+id/editText2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@null"
-                    android:ems="10"
-                    android:hint="Введите Email"
-                    android:inputType="textPersonName"
-                    android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/guideline10"
-                    app:layout_constraintTop_toTopOf="@+id/guideline11" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/guideline10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.2" />
-
-                <android.support.constraint.Guideline
-                    android:id="@+id/guideline11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.5" />
-
-                <EditText
-                    android:id="@+id/editText"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@null"
-                    android:ems="10"
-                    android:hint="Введите номе телефона"
-                    android:inputType="phone"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline11"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline10"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:gravity="end|center"
+                android:paddingEnd="24dp"
+                android:ems="10"
+                android:hint="E-Mail или Телефон"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline10"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
