@@ -14,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.medicapp.BaseMessage;
+import com.example.medicapp.model.BaseMessage;
 import com.example.medicapp.R;
 import com.example.medicapp.adapters.MessageListAdapter;
 import com.example.medicapp.custom.CircleMedicView;

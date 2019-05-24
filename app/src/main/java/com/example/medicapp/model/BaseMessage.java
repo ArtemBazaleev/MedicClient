@@ -1,4 +1,4 @@
-package com.example.medicapp;
+package com.example.medicapp.model;
 
 import android.net.Uri;
 

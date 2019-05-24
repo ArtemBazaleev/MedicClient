@@ -12,106 +12,111 @@
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/shape_card_left"
             android:elevation="6dp"
-            android:id="@+id/constraintLayout"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline9"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3">
 
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/guideline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.35" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.35" />
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/guideline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.65" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.65" />
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/guideline4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.79" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.79" />
 
-                <EditText
-                    android:id="@+id/login"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@null"
-                    android:ems="10"
-                    android:hint="@string/family"
-                    android:inputType="textPersonName"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <EditText
+                android:id="@+id/login"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:ems="10"
+                android:hint="@string/family"
+                android:inputType="textPersonName"
+                android:paddingStart="24dp"
+                android:paddingEnd="0dp"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline6"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.8" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    android:background="#1A000000"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/guideline6" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="#1A000000"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="#1A000000"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintStart_toStartOf="parent" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="#1A000000"
+                app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                <EditText
-                    android:id="@+id/confirm_password_txt"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@null"
-                    android:ems="10"
-                    android:hint="Отчество"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/guideline5" />
+            <EditText
+                android:id="@+id/confirm_password_txt"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:background="@null"
+                android:ems="10"
+                android:hint="Отчество"
+                android:paddingStart="24dp"
+                android:paddingEnd="0dp"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline5"
+                app:layout_constraintVertical_bias="0.20999998" />
 
-                <EditText
-                    android:id="@+id/editText3"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@null"
-                    android:ems="10"
-                    android:hint="Имя"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/guideline6" />
+            <EditText
+                android:id="@+id/editText3"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:ems="10"
+                android:hint="Имя"
+                android:paddingStart="24dp"
+                android:paddingEnd="0dp"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -206,9 +211,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="10dp"
                     android:text="Выбрать дату"
                     android:textAlignment="center"
                     android:textColor="@android:color/background_dark"

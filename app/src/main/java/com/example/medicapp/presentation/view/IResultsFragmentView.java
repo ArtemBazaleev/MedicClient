@@ -11,5 +11,6 @@ public interface IResultsFragmentView extends MvpView {
 
     void loadResults(List<ResultModel> data);
 
-    void startActivityResultView();
+    void startActivityResultView(ResultModel model);
+
 }

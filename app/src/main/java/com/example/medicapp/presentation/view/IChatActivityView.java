@@ -1,7 +1,7 @@
 package com.example.medicapp.presentation.view;
 
 import com.arellomobile.mvp.MvpView;
-import com.example.medicapp.BaseMessage;
+import com.example.medicapp.model.BaseMessage;
 
 import java.util.List;
 

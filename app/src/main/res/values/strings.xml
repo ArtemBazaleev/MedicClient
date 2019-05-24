@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MedicApp</string>
+    <string name="app_name">PatientApp</string>
     <string name="login">Login</string>
     <string name="confirm_password">Confirm password</string>
     <string name="enter_password">Enter password</string>

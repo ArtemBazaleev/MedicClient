@@ -2,7 +2,7 @@ package com.example.medicapp.presentation.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.medicapp.BaseMessage;
+import com.example.medicapp.model.BaseMessage;
 import com.example.medicapp.presentation.view.IChatActivityView;
 
 @InjectViewState

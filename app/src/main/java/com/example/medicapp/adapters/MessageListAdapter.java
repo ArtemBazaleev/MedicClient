@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.medicapp.BaseMessage;
+import com.example.medicapp.model.BaseMessage;
 import com.example.medicapp.R;
 
 import java.util.List;
@@ -112,14 +112,13 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private void animateRightToLeft(View itemView) {
-//        Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.);
-//        itemView.startAnimation(animation);
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.right_to_left_anim);
+        itemView.startAnimation(animation);
     }
 
     private void animateLeftToRight(View holder) {
-//        Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
-//        holder.startAnimation(animation);
-
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.left_to_right_anim);
+        holder.startAnimation(animation);
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
