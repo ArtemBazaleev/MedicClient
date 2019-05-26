@@ -16,18 +16,28 @@
         android:theme="@style/AppTheme">
         <service android:name=".service.MessageNotificationService"/>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.ResultViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_result_view"
             android:theme="@style/FullscreenTheme"></activity>
-        <activity android:name=".ui.ChatActivity" />
-        <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.VideoViewActivity" />
         <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.ChatActivity" />
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.LoginActivity" />
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.VideoViewActivity" />
+        <activity
+            android:screenOrientation="portrait"
             android:name=".ui.MainActivity"
             android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.RegistrationActivity">
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.RegistrationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

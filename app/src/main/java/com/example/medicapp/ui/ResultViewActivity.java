@@ -93,20 +93,17 @@ public class ResultViewActivity extends AppCompatActivity {
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
         }
+        return false;
     };
 
-    @BindView(R.id.bigImage)
-    BigImageView bigImageView;
-    @BindView(R.id.save)
-    Button saveBtn;
+    @BindView(R.id.bigImage) BigImageView bigImageView;
+    @BindView(R.id.save) Button saveBtn;
+    private String photoUrl;
+    public static final String IMAGE_PARAM = "IMAGE_PARAMS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +111,19 @@ public class ResultViewActivity extends AppCompatActivity {
         BigImageViewer.initialize(GlideImageLoader.with(getApplicationContext()));
         setContentView(R.layout.activity_result_view);
         ButterKnife.bind(this);
+        Bundle extra = getIntent().getExtras();
+        if (extra != null)
+            photoUrl = extra.getString(IMAGE_PARAM);
+
+
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.bigImage);
 
         bigImageView.setProgressIndicator(new ProgressPieIndicator());
-        bigImageView.showImage(Uri.parse("https://media.giphy.com/media/SwcPjkbLiF98Q/giphy.gif"));
+        if (photoUrl== null)
+            bigImageView.showImage(Uri.parse("https://media.giphy.com/media/SwcPjkbLiF98Q/giphy.gif"));
+        else bigImageView.showImage(Uri.parse(photoUrl));
         bigImageView.setTapToRetry(true);
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(view -> toggle());

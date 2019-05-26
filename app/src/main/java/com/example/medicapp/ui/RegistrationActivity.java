@@ -2,6 +2,7 @@ package com.example.medicapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,11 +16,12 @@ import com.example.medicapp.presentation.view.IRegistrationView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RegistrationActivity extends MvpAppCompatActivity implements IRegistrationView {
+public class RegistrationActivity extends MvpAppCompatActivity
+        implements IRegistrationView {
     @BindView(R.id.register_act_reg)
     ImageButton reg;
-    @BindView(R.id.register_act_login)
-    TextView login;
+    @BindView(R.id.login_btn_reg)
+    Button login;
 
     @InjectPresenter
     RegistrationPresenter presenter;
@@ -40,6 +42,8 @@ public class RegistrationActivity extends MvpAppCompatActivity implements IRegis
 
     @Override
     public void startLoginActivity() {
-        startActivity(new Intent(this, LoginActivity.class));
+        Intent i = new Intent(this, LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 }

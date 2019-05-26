@@ -55,6 +55,9 @@
                 android:background="@null"
                 android:ems="10"
                 android:hint="@string/family"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:fontFamily="@font/sf_compact_rounded_medium"
                 android:inputType="textPersonName"
                 android:paddingStart="24dp"
                 android:paddingEnd="0dp"
@@ -92,7 +95,10 @@
                 android:ems="10"
                 android:hint="Отчество"
                 android:paddingStart="24dp"
+                android:fontFamily="@font/sf_compact_rounded_medium"
                 android:paddingEnd="0dp"
+                android:maxLines="1"
+                android:maxLength="25"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -109,7 +115,10 @@
                 android:layout_marginBottom="10dp"
                 android:background="@null"
                 android:ems="10"
+                android:maxLines="1"
+                android:maxLength="25"
                 android:hint="Имя"
+                android:fontFamily="@font/sf_compact_rounded_medium"
                 android:paddingStart="24dp"
                 android:paddingEnd="0dp"
                 android:textSize="22sp"
@@ -193,49 +202,58 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.9" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayout4"
+        <Button
+            android:id="@+id/chose_date_btn_entry"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
             android:clickable="true"
             android:focusable="true"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:fontFamily="@font/sf_compact_rounded_medium"
             android:elevation="6dp"
-            android:background="@drawable/round_white_bg"
+            android:stateListAnimator="@null"
+            android:text="Выбрать дату"
+            android:background="@drawable/round_white_bg_rippled"
             app:layout_constraintEnd_toStartOf="@+id/guideline9"
             app:layout_constraintStart_toStartOf="@+id/guideline8"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Выбрать дату"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/textView4"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_marginEnd="8dp"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:text="Выбрать дату"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textColor="@android:color/background_dark"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textStyle="bold"-->
+                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintTop_toTopOf="parent" />-->
+        </Button>
 
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/submit_btn_entry"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:enabled="false"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="9dp"
             android:background="@drawable/shape_round_gradient_btn"
             android:text="Записаться"
+            android:fontFamily="@font/sf_compact_rounded_light"
+            android:textSize="18sp"
+            android:textAllCaps="false"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -257,7 +275,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+            app:layout_constraintTop_toBottomOf="@+id/chose_date_btn_entry" />
 
     </android.support.constraint.ConstraintLayout>
 

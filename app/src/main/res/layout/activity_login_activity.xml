@@ -42,12 +42,17 @@
         app:startColor="@color/colorDownTest1"  />
 
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout9"
+    <Button
+        android:id="@+id/registration_btn_login"
         android:layout_width="171dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_card_right"
-        android:elevation="6dp"
+        android:layout_height="55dp"
+        android:fontFamily="@font/sf_compact_rounded_medium"
+        android:textSize="18sp"
+        android:background="@drawable/shape_card_right_ripled"
+        android:elevation="8dp"
+        android:stateListAnimator="@null"
+        android:text="Регистрация"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline17"
@@ -55,30 +60,30 @@
         app:layout_constraintVertical_bias="0.684">
 
 
-        <TextView
-            android:id="@+id/login_act_registration"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginBottom="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:fontFamily="@font/sf_compact_rounded_bold"
-            android:gravity="center"
-            android:text="Регистрация"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+        <!--<TextView-->
+            <!--android:id="@+id/login_act_registration"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:layout_marginEnd="18dp"-->
+            <!--android:layout_marginBottom="16dp"-->
+            <!--android:background="?attr/selectableItemBackground"-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:fontFamily="@font/sf_compact_rounded_bold"-->
+            <!--android:gravity="center"-->
+            <!--android:text="Регистрация"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:textSize="18sp"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintVertical_bias="0.0" />-->
 
-    </android.support.constraint.ConstraintLayout>
+    </Button>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline14"
@@ -210,7 +215,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout9"
+        app:layout_constraintStart_toStartOf="@+id/registration_btn_login"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout8" />
 
     <TextView
@@ -228,7 +233,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout9"
+        app:layout_constraintTop_toBottomOf="@+id/registration_btn_login"
         app:layout_constraintVertical_bias="0.25" />
 
     <ImageButton
@@ -236,7 +241,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/enter_btn_bg"
+        android:background="@drawable/enter_btn_bg_rippled"
         android:elevation="6dp"
         android:src="@drawable/ic_arrow_forward_black_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"

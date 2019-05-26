@@ -31,6 +31,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<BaseMessage> mMessageList;
+    private IOnReceivedImageClicked mListener;
 
     public MessageListAdapter(Context context, List<BaseMessage> messageList) {
         mContext = context;
@@ -40,6 +41,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public void addMessage(BaseMessage message){
         mMessageList.add(message);
         notifyDataSetChanged();
+    }
+
+    public void addOnRecivedImageListener(IOnReceivedImageClicked listener){
+        mListener = listener;
     }
 
     @Override
@@ -164,29 +169,45 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    private class ReceivedImageMessageHolder extends RecyclerView.ViewHolder{
-        ImageView imageView;
+    private class ReceivedImageMessageHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView imageView;
+        private BaseMessage message;
         ReceivedImageMessageHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageReceived);
+            imageView.setOnClickListener(this);
         }
         void onBind(BaseMessage message){
+            this.message = message;
             Glide.with(mContext)
                     .load(message.getUri())
                     .into(imageView);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (mListener!=null)
+                mListener.onReceivedImage(message);
+        }
     }
 
     private class SentMessageImageHolder extends RecyclerView.ViewHolder {
+
         ImageView imageView;
+
         SentMessageImageHolder(@NonNull View view) {
             super(view);
             imageView = itemView.findViewById(R.id.imageReceived);
         }
+
         void onBind(BaseMessage baseMessage){
             Glide.with(mContext)
                     .load(baseMessage.getUri())
                     .into(imageView);
         }
+    }
+
+    public interface IOnReceivedImageClicked{
+        void onReceivedImage(BaseMessage baseMessage);
     }
 }

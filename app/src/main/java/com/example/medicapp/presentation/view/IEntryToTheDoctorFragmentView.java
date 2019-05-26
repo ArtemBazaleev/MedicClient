@@ -15,4 +15,6 @@ public interface IEntryToTheDoctorFragmentView extends MvpView {
     void loadAvailableDate(List<EmptyDateModel> EmptyDateModel);
 
     void setDateText(String txt);
+
+    void setActiveSubmitBtn(boolean active);
 }

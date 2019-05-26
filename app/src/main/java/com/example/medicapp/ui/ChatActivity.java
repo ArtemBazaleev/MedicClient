@@ -37,7 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class ChatActivity extends AppCompatActivity implements IChatActivityView {
+public class ChatActivity extends AppCompatActivity
+        implements IChatActivityView, MessageListAdapter.IOnReceivedImageClicked {
     @BindView(R.id.recycler_chat) RecyclerView recyclerView;
     @BindView(R.id.imageButton2) ImageButton imageButton;
     @BindView(R.id.editText4) EditText text;
@@ -48,6 +49,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
     @BindView(R.id.circleImageView2) CircleImageView circleImageView;
     @BindView(R.id.addBtnChat) ImageView addBtn;
     private static final int GALLERY_REQUEST_CODE = 65535;
+
 
     private Socket mSocket;
     {
@@ -67,13 +69,17 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
         mSocket.on("new message", onNewMessage);
         mSocket.on("user joined", onUserJoined);
-
         mSocket.connect();
         hideAll();
         LinearLayoutManager manager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         List<BaseMessage> messages = new ArrayList<>();
         adapter = new MessageListAdapter(this, messages);
+        adapter.addOnRecivedImageListener(this);
+        BaseMessage baseMessage31 = new BaseMessage();
+        baseMessage31.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_PHOTO;
+        baseMessage31.setUri(Uri.parse("https://zdnet3.cbsistatic.com/hub/i/2019/03/16/e118b0c5-cf3c-4bdb-be71-103228677b25/966244d1205becf3dd9a1af76b8d869a/android-logo.png"));
+        adapter.addMessage(baseMessage31);
         recyclerView.setAdapter(adapter);
 
         imageButton.setOnClickListener(l->{
@@ -87,24 +93,18 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         });
 
         addBtn.setOnClickListener(l->{
-            //Create an Intent with action as ACTION_PICK
             Intent intent = new Intent(Intent.ACTION_PICK);
-            // Sets the type as image/*. This ensures only components of type image are selected
             intent.setType("image/*");
-            //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
             String[] mimeTypes = {"image/jpeg", "image/png"};
             intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
-            // Launching the Intent
             startActivityForResult(intent, GALLERY_REQUEST_CODE);
         });
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data){
-        // Result code is RESULT_OK only if the user selects an Image
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode){
                 case GALLERY_REQUEST_CODE:
-                    //data.getData returns the content URI for the selected Image
                     Uri selectedImage = data.getData();
                     BaseMessage baseMessage = new BaseMessage();
                     baseMessage.messageType = BaseMessage.MESSAGE_TYPE_SENDER_IMAGE;
@@ -197,4 +197,11 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         adapter.addMessage(baseMessage);
         recyclerView.scrollToPosition(adapter.getItemCount()-1);
     });
+
+    @Override
+    public void onReceivedImage(BaseMessage baseMessage) {
+        Intent i = new Intent(this, ResultViewActivity.class);
+        i.putExtra(ResultViewActivity.IMAGE_PARAM, baseMessage.getUri().toString());
+        startActivity(i);
+    }
 }
