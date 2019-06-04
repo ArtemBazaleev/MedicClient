@@ -20,31 +20,43 @@ import retrofit2.Response;
 @InjectViewState
 public class RegistrationPresenter extends MvpPresenter<IRegistrationView> {
 
-    private String login;
-    private String password;
-    private String confirmPassword;
+    private String login ="";
+    private String password = "";
+    private String confirmPassword = "";
     private String sms;
     private RegistrationHelper helper = new RegistrationHelper();
-    CompositeDisposable disposables = new CompositeDisposable();
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     public void onLoginClicked(){
         getViewState().startLoginActivity();
     }
 
     public void onRegisterClicked(){
+        if (password.equals("") || confirmPassword.equals("") || login.equals("")){
+            getViewState().showToastyMessage("Заполните все поля");
+            return;
+        }
         if (!password.equals(confirmPassword)) {
             getViewState().showToastyMessage("Пароли не совпадают");
+            return;
         }
+        getViewState().setEnabledSubmitBtn(false);
+        getViewState().showLoadingIndicator();
         Disposable  d = helper.signUp(login, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onSuccess, Throwable::printStackTrace);
+                .subscribe(this::onSuccess, throwable -> {
+                    throwable.printStackTrace();
+                    getViewState().hideLoadingIndicator();
+                    getViewState().setEnabledSubmitBtn(true);
+                    getViewState().showToastyMessage("Error, try later");
+                });
         disposables.add(d);
-
-        //getViewState().showAlertDialog();
     }
 
     private void onSuccess(Response<ResponseSignIn> responseSignInResponse) {
+        getViewState().setEnabledSubmitBtn(true);
+        getViewState().hideLoadingIndicator();
         if (responseSignInResponse.isSuccessful()){
             getViewState().showToastyMessage(responseSignInResponse.body() != null ? responseSignInResponse.body().getMessage() : "");
             getViewState().showAlertDialog();

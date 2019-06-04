@@ -27,6 +27,29 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.29" />
 
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout8">
+
+        <ImageButton
+            android:id="@+id/login_act_enter"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/enter_btn_bg_rippled"
+            android:elevation="6dp"
+            android:src="@drawable/ic_arrow_forward_black_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout8" />
+    </FrameLayout>
+
     <com.example.medicapp.custom.Wave
         android:id="@+id/wave3"
         android:layout_width="0dp"
@@ -58,30 +81,6 @@
         app:layout_constraintStart_toStartOf="@+id/guideline17"
         app:layout_constraintTop_toTopOf="@+id/guideline18"
         app:layout_constraintVertical_bias="0.684">
-
-
-        <!--<TextView-->
-            <!--android:id="@+id/login_act_registration"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:layout_marginEnd="18dp"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:background="?attr/selectableItemBackground"-->
-            <!--android:clickable="true"-->
-            <!--android:focusable="true"-->
-            <!--android:fontFamily="@font/sf_compact_rounded_bold"-->
-            <!--android:gravity="center"-->
-            <!--android:text="Регистрация"-->
-            <!--android:textColor="@android:color/black"-->
-            <!--android:textSize="18sp"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--app:layout_constraintVertical_bias="0.0" />-->
 
     </Button>
 
@@ -199,18 +198,18 @@
     </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textView24"
+        android:id="@+id/forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:fontFamily="@font/sf_compact_rounded_light"
-        android:text="Забыли пароль?"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:background="?attr/selectableItemBackground"
+        android:fontFamily="@font/sf_compact_rounded_light"
+        android:text="Забыли пароль?"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toEndOf="parent"
@@ -236,16 +235,22 @@
         app:layout_constraintTop_toBottomOf="@+id/registration_btn_login"
         app:layout_constraintVertical_bias="0.25" />
 
-    <ImageButton
-        android:id="@+id/login_act_enter"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="#fafafa"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/enter_btn_bg_rippled"
-        android:elevation="6dp"
-        android:src="@drawable/ic_arrow_forward_black_24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"
+        app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout8" />
+        app:layout_constraintStart_toStartOf="@+id/frameLayout"
+        app:layout_constraintTop_toTopOf="@+id/frameLayout" />
 
 </android.support.constraint.ConstraintLayout>

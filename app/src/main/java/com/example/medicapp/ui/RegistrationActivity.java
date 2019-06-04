@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ public class RegistrationActivity extends MvpAppCompatActivity
     @BindView(R.id.login) EditText loginEdit;
     @BindView(R.id.editText3) EditText passwordEdit;
     @BindView(R.id.confirm_password_reg) EditText confirmPassword;
+    @BindView(R.id.progressBar_registration)
+    ProgressBar progressBar;
 
     @InjectPresenter
     RegistrationPresenter presenter;
@@ -140,5 +143,20 @@ public class RegistrationActivity extends MvpAppCompatActivity
         dialog = builder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+    }
+
+    @Override
+    public void showLoadingIndicator() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setEnabledSubmitBtn(boolean enabled) {
+        reg.setEnabled(enabled);
     }
 }

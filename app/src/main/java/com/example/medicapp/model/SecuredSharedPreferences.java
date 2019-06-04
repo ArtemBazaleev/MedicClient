@@ -21,6 +21,7 @@ public class SecuredSharedPreferences {
     private SecuredPreferenceStore securedSharedPreferences;
 
     private static final String TOKEN = "SECURED_TOKEN";
+    private static final String ID = "SECURED_ID";
 
     public SecuredSharedPreferences(Context context) {
         //not mandatory, can be null too
@@ -63,5 +64,15 @@ public class SecuredSharedPreferences {
 
     public String getToken(){
         return securedSharedPreferences.getString(TOKEN, "");
+    }
+
+    public void setUserID(String id){
+        securedSharedPreferences.edit()
+                .putString(ID,id)
+                .apply();
+    }
+
+    public String getUserID(){
+        return securedSharedPreferences.getString(ID,"");
     }
 }

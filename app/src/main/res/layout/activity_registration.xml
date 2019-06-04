@@ -20,6 +20,30 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/optRoundCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/optRoundCardView">
+
+        <ImageButton
+            android:id="@+id/register_act_reg"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/enter_btn_bg_rippled"
+            android:elevation="6dp"
+            android:src="@drawable/ic_arrow_forward_black_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/optRoundCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/optRoundCardView" />
+
+    </FrameLayout>
+
     <com.example.medicapp.custom.Wave
         android:id="@+id/wave"
         android:layout_width="0dp"
@@ -66,17 +90,7 @@
         app:layout_constraintGuide_percent="0.71" />
 
 
-    <ImageButton
-        android:id="@+id/register_act_reg"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/enter_btn_bg_rippled"
-        android:elevation="6dp"
-        android:src="@drawable/ic_arrow_forward_black_24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/optRoundCardView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/optRoundCardView" />
+
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/optRoundCardView"
@@ -209,29 +223,6 @@
         app:layout_constraintVertical_bias="0.49"/>
 
 
-        <!--<TextView-->
-        <!--android:id="@+id/register_act_login"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:background="?attr/selectableItemBackground"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:gravity="center"-->
-        <!--android:text="Вход"-->
-        <!--android:textColor="@android:color/background_dark"-->
-        <!--android:textSize="18sp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-
-
     <android.support.constraint.Guideline
         android:id="@+id/guideline7"
         android:layout_width="wrap_content"
@@ -245,6 +236,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.73" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_registration"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="#fafafa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/frameLayout2" />
 
 
 </android.support.constraint.ConstraintLayout>

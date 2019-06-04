@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.medicapp.App;
 import com.example.medicapp.model.ExerciseModel;
 import com.example.medicapp.IOnLoadMore;
 import com.example.medicapp.R;
@@ -44,6 +46,15 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
 
     @InjectPresenter
     ExerciseCellFragmentPresenter presenter;
+
+    @ProvidePresenter
+    ExerciseCellFragmentPresenter providePresenter(){
+        App app = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
+        return new ExerciseCellFragmentPresenter(
+                app.getmToken(),
+                app.getmUserID()
+        );
+    }
 
     public ExerciseCellFragment() {
     }

@@ -26,6 +26,15 @@ public class App extends Application {
     public void setmToken(String mToken) {
         this.mToken = mToken;
     }
+    private String mUserID = "";
+
+    public String getmUserID() {
+        return mUserID;
+    }
+
+    public void setmUserID(String mUserID) {
+        this.mUserID = mUserID;
+    }
 
     @Override
     public void onCreate() {
