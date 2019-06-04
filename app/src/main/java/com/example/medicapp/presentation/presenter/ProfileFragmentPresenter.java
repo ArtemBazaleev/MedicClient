@@ -27,10 +27,12 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
 
     public void setName(String name){
         profile.setName(name);
+        checkFilledData();
     }
 
     public void setSurname(String surname){
         profile.setSurname(surname);
+        checkFilledData();
     }
 
     public void setWeight(Double weight){
@@ -59,5 +61,17 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
 
     public void onPhotoClicked() {
         getViewState().chosePhoto();
+    }
+
+    private void checkFilledData(){
+        if (profile.getName().equals("")) {
+            getViewState().setEnabledSubmitBtn(false);
+            return;
+        }
+        if (profile.getSurname().equals("")) {
+            getViewState().setEnabledSubmitBtn(false);
+            return;
+        }
+        getViewState().setEnabledSubmitBtn(true);
     }
 }

@@ -13,7 +13,7 @@
     <color name="colorDownTestBlur1">#4d4cacfc</color>
     <color name="colorDownTestBlur2">#4d04ecff</color>
 
-    <color name="color_white">#fafafa</color>
+    <color name="color_white">#000000</color>
 
     <color name="black_overlay">#66464646</color>
 </resources>

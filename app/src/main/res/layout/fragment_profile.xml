@@ -377,6 +377,7 @@
                 android:text="Cохранить"
                 android:textAllCaps="false"
                 android:textColor="#fafafa"
+                android:enabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/constraintLayout7"
                 app:layout_constraintStart_toStartOf="@+id/textView22"
@@ -384,9 +385,5 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
-
-
-
 
 </android.support.constraint.ConstraintLayout>

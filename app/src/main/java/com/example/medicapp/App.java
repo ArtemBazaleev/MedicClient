@@ -17,6 +17,16 @@ public class App extends Application {
         }
     }
 
+    private String mToken = "";
+
+    public String getmToken() {
+        return mToken;
+    }
+
+    public void setmToken(String mToken) {
+        this.mToken = mToken;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

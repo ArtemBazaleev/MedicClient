@@ -5,8 +5,8 @@ public class ProfileModel {
     private Double height;
     private Double weight;
     private int age;
-    private String name;
-    private String surname;
+    private String name = "";
+    private String surname = "";
     private boolean isMale;
     private boolean isLazyJob;
     private boolean isDoSport;

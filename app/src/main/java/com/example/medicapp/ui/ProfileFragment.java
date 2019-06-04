@@ -158,6 +158,11 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
                 .into(profileImage);
     }
 
+    @Override
+    public void setEnabledSubmitBtn(boolean enabled) {
+        submit.setEnabled(enabled);
+    }
+
     //MVP
     @Override
     public void onActivityResult(int requestCode,int resultCode,Intent data){

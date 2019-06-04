@@ -1,8 +1,15 @@
 package com.example.medicapp.ui;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,18 +20,24 @@ import com.example.medicapp.R;
 import com.example.medicapp.presentation.presenter.RegistrationPresenter;
 import com.example.medicapp.presentation.view.IRegistrationView;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RegistrationActivity extends MvpAppCompatActivity
         implements IRegistrationView {
-    @BindView(R.id.register_act_reg)
-    ImageButton reg;
-    @BindView(R.id.login_btn_reg)
-    Button login;
+    @BindView(R.id.register_act_reg) ImageButton reg;
+    @BindView(R.id.login_btn_reg) Button login;
+
+
+    @BindView(R.id.login) EditText loginEdit;
+    @BindView(R.id.editText3) EditText passwordEdit;
+    @BindView(R.id.confirm_password_reg) EditText confirmPassword;
 
     @InjectPresenter
     RegistrationPresenter presenter;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +46,61 @@ public class RegistrationActivity extends MvpAppCompatActivity
         ButterKnife.bind(this);
         reg.setOnClickListener(v -> presenter.onRegisterClicked());
         login.setOnClickListener(v -> presenter.onLoginClicked());
+        init();
+    }
+
+    private void init(){
+        loginEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.onLoginChanged(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        passwordEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.onPasswordChanged(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        confirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.onConfirmPasswordChanged(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     @Override
@@ -45,5 +113,32 @@ public class RegistrationActivity extends MvpAppCompatActivity
         Intent i = new Intent(this, LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
+    }
+
+    @Override
+    public void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View v = getLayoutInflater().inflate(R.layout.custom_dialog,null);
+        EditText sms = v.findViewById(R.id.sms_code);
+        sms.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.onSmsCode(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        builder.setView(v);
+        dialog = builder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 }

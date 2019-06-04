@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -121,8 +122,8 @@
             android:drawableStart="@drawable/ic_person_black_24dp"
             android:drawablePadding="10dp"
             android:ems="10"
-            android:hint="@string/login"
-            android:inputType="textPersonName"
+            android:hint="Номер телефона "
+            android:inputType="phone"
             android:paddingStart="8dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline6"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -148,7 +149,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/confirm_password_txt"
+            android:id="@+id/confirm_password_reg"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginBottom="8dp"
@@ -156,7 +157,7 @@
             android:drawableStart="@drawable/ic_lock_black_24dp"
             android:drawablePadding="10dp"
             android:ems="10"
-            android:hint="@string/confirm_password"
+            android:hint="Повторите пароль"
             android:inputType="textPassword"
             android:paddingStart="8dp"
             android:paddingEnd="0dp"
@@ -174,7 +175,7 @@
             android:drawableStart="@drawable/ic_lock_black_24dp"
             android:drawablePadding="10dp"
             android:ems="10"
-            android:hint="@string/enter_password"
+            android:hint="Пароль"
             android:inputType="textPassword"
             android:paddingStart="8dp"
             android:paddingEnd="0dp"

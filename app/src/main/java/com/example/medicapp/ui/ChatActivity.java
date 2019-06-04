@@ -50,7 +50,6 @@ public class ChatActivity extends AppCompatActivity
     @BindView(R.id.addBtnChat) ImageView addBtn;
     private static final int GALLERY_REQUEST_CODE = 65535;
 
-
     private Socket mSocket;
     {
         try {
@@ -69,7 +68,7 @@ public class ChatActivity extends AppCompatActivity
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
         mSocket.on("new message", onNewMessage);
         mSocket.on("user joined", onUserJoined);
-        mSocket.connect();
+        //mSocket.connect();
         hideAll();
         LinearLayoutManager manager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
