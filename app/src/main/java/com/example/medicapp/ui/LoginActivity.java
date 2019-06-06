@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -38,9 +39,16 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
     @BindView(R.id.forgot_password)
     TextView forgotPassword;
 
+    private Button bDialog;
+    private EditText loginDialog;
+    private EditText smsCodeDialog;
+    private ConstraintLayout smsCodeLayoutDialog;
+
     @InjectPresenter
-     LoginPresenter presenter;
+    LoginPresenter presenter;
     private AlertDialog dialog;
+    private TextView textDialog;
+    private TextWatcher smsRestoreTextWatcher;
 
     @ProvidePresenter
     LoginPresenter providePresenter(){
@@ -89,7 +97,6 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
 
             }
         });
-
     }
 
     @Override
@@ -132,13 +139,28 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
     public void showRestorePasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.custom_dialog_restore_account,null);
-        Button b = v.findViewById(R.id.sendSmsBtn);
-        EditText editText = v.findViewById(R.id.login_phone);
-        editText.addTextChangedListener(new TextWatcher() {
+        bDialog = v.findViewById(R.id.sendSmsBtn);
+        bDialog.setOnClickListener(l->presenter.onDialogBtnClicked());
+        loginDialog = v.findViewById(R.id.login_phone);
+        smsCodeDialog = v.findViewById(R.id.sms_code);
+        textDialog = v.findViewById(R.id.textView4);
+        smsCodeLayoutDialog = v.findViewById(R.id.constraintLayout4);
+        smsRestoreTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.onRestoreLoginChanged(s.toString());
             }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        };
+        loginDialog.addTextChangedListener(smsRestoreTextWatcher);
+        smsCodeDialog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -146,9 +168,7 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
         builder.setView(v);
         dialog = builder.create();
@@ -158,6 +178,49 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
 
     @Override
     public void hideRestorePasswordDialog() {
-        dialog.hide();
+        if (dialog!=null) {
+            dialog.hide();
+            dialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showSmsFieldDialog() {
+        if (smsCodeLayoutDialog!= null) {
+            smsCodeLayoutDialog.setVisibility(View.VISIBLE);
+            bDialog.setText("Готово");
+            presenter.setFlag(true);
+            textDialog.setText("Введите новый пароль");
+            bDialog.setOnClickListener(l->presenter.onDialogRestoreBtnClicked());
+            loginDialog.setText("");
+            loginDialog.setHint("Введите новый пароль");
+            loginDialog.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    presenter.onNewPasswordChanged(s.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) { }
+            });
+            smsCodeDialog.setText("");
+        }
+    }
+
+    @Override
+    public void updateDialogModeEnterPassword() {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dialog!=null)
+            dialog.dismiss();
     }
 }

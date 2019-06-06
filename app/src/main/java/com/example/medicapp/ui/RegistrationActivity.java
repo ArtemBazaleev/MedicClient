@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.medicapp.App;
+import com.example.medicapp.ITimerSms;
 import com.example.medicapp.R;
 import com.example.medicapp.presentation.presenter.RegistrationPresenter;
 import com.example.medicapp.presentation.view.IRegistrationView;
@@ -35,12 +38,19 @@ public class RegistrationActivity extends MvpAppCompatActivity
     @BindView(R.id.login) EditText loginEdit;
     @BindView(R.id.editText3) EditText passwordEdit;
     @BindView(R.id.confirm_password_reg) EditText confirmPassword;
-    @BindView(R.id.progressBar_registration)
-    ProgressBar progressBar;
+    @BindView(R.id.progressBar_registration) ProgressBar progressBar;
+
+    private ProgressBar progressBarDialog;
 
     @InjectPresenter
     RegistrationPresenter presenter;
     private AlertDialog dialog;
+    private TextView moreSms;
+
+    @ProvidePresenter
+    RegistrationPresenter providePresenter(){
+        return new RegistrationPresenter((App) getApplicationContext());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +133,9 @@ public class RegistrationActivity extends MvpAppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.custom_dialog,null);
         EditText sms = v.findViewById(R.id.sms_code);
+        progressBarDialog = v.findViewById(R.id.progressBar_custom_dialog);
+        moreSms = v.findViewById(R.id.more_sms_btn);
+        moreSms.setOnClickListener(l->presenter.moreSms());
         sms.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -158,5 +171,27 @@ public class RegistrationActivity extends MvpAppCompatActivity
     @Override
     public void setEnabledSubmitBtn(boolean enabled) {
         reg.setEnabled(enabled);
+    }
+
+    @Override
+    public void showProgressDialogWindow() {
+        progressBarDialog.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressDialogWindow() {
+        progressBarDialog.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setMoreSmsText(String text) {
+        moreSms.setText(text);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (dialog!=null)
+            dialog.dismiss();
     }
 }

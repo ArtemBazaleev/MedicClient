@@ -1,24 +1,66 @@
 package com.example.medicapp.presentation.presenter;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.model.ProfileModel;
+import com.example.medicapp.networking.DataApi;
+import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.presentation.view.IProfileFragmentView;
+
+import java.util.Objects;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.Disposables;
+import io.reactivex.schedulers.Schedulers;
 
 
 @InjectViewState
 public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView> {
 
     private ProfileModel profile;
+    private String token = "";
+    private String userID = "";
+    private DataApiHelper dataApiHelper;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
-    public ProfileFragmentPresenter(){
+    public ProfileFragmentPresenter(String token, String userID){
+        this.token = token;
+        this.userID = userID;
         profile = new ProfileModel();
+        dataApiHelper = new DataApiHelper();
+    }
+
+    public void onViewCreated(){
+        Disposable d = dataApiHelper.getProfile(token, userID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    if (responseBodyResponse.isSuccessful())
+                        getViewState().setProfileData(new ProfileModel(responseBodyResponse.body().string()));
+                    else
+                        Log.d("Profile", "onCreateView: " + responseBodyResponse.errorBody().string());
+                }, Throwable::printStackTrace);
+        disposables.add(d);
     }
 
     public void onSubmitBtnClicked(){
-
+        dataApiHelper.setProfile(token, userID,profile)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        responseBodyResponse -> {
+                            if (responseBodyResponse.isSuccessful())
+                                getViewState().showToastyMessage("Успех");
+                            else
+                                Log.d("Profile", "onSubmitBtnClicked: " + responseBodyResponse.errorBody().string());
+                        },
+                        Throwable::printStackTrace
+                );
     }
 
     public void setMale(boolean isMale){
@@ -35,7 +77,7 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
         checkFilledData();
     }
 
-    public void setWeight(Double weight){
+    public void setWeight(float weight){
         profile.setWeight(weight);
     }
 
@@ -43,7 +85,7 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
         profile.setAge(age);
     }
 
-    public void setHeight(Double height){
+    public void setHeight(float height){
         profile.setHeight(height);
     }
 

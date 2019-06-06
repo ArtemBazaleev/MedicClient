@@ -1,6 +1,8 @@
 package com.example.medicapp.networking;
 
 import com.example.medicapp.networking.registration.ConfirmBody;
+import com.example.medicapp.networking.registration.RequestRestoreBody;
+import com.example.medicapp.networking.registration.RestorePasswordBody;
 import com.example.medicapp.networking.registration.SignInBody;
 import com.example.medicapp.networking.registration.response.ResponseSignIn;
 
@@ -24,6 +26,14 @@ public interface RegistrationApi {
     @Headers("Content-Type: application/json")
     @POST("auth/signup/confirm")
     Observable<Response<ResponseBody>> confirm(@Body ConfirmBody body);
+
+    @Headers("Content-Type: application/json")
+    @POST("auth/password/reset/request")
+    Observable<Response<ResponseBody>> requestRestore(@Body RequestRestoreBody body);
+
+    @Headers("Content-Type: application/json")
+    @POST("auth/password/reset/receive")
+    Observable<Response<ResponseBody>> restorePassword(@Body RestorePasswordBody body);
 
 
 }

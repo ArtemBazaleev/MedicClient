@@ -2,6 +2,8 @@ package com.example.medicapp.presentation.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.medicapp.ITimerListener;
+import com.example.medicapp.ITimerSms;
 import com.example.medicapp.networking.registration.RegistrationHelper;
 import com.example.medicapp.networking.registration.response.ResponseSignIn;
 import com.example.medicapp.presentation.view.IRegistrationView;
@@ -18,14 +20,23 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 @InjectViewState
-public class RegistrationPresenter extends MvpPresenter<IRegistrationView> {
+public class RegistrationPresenter extends MvpPresenter<IRegistrationView> implements ITimerListener {
 
     private String login ="";
     private String password = "";
     private String confirmPassword = "";
-    private String sms;
+    private String sms = "";
+    private boolean isLoading = false;
     private RegistrationHelper helper = new RegistrationHelper();
     private CompositeDisposable disposables = new CompositeDisposable();
+    private ITimerSms timer;
+    private boolean isTicking = false;
+
+    public RegistrationPresenter(ITimerSms timerSms) {
+        timer = timerSms;
+        timer.setTimerListener(this);
+        isTicking = timer.isTicking();
+    }
 
     public void onLoginClicked(){
         getViewState().startLoginActivity();
@@ -58,6 +69,10 @@ public class RegistrationPresenter extends MvpPresenter<IRegistrationView> {
         getViewState().setEnabledSubmitBtn(true);
         getViewState().hideLoadingIndicator();
         if (responseSignInResponse.isSuccessful()){
+            if (timer.isTicking())
+                timer.stopTimer();
+            timer.startTimer(30000);
+            isTicking = true;
             getViewState().showToastyMessage(responseSignInResponse.body() != null ? responseSignInResponse.body().getMessage() : "");
             getViewState().showAlertDialog();
         }
@@ -85,16 +100,71 @@ public class RegistrationPresenter extends MvpPresenter<IRegistrationView> {
 
     public void onSmsCode(String sms) {
         this.sms = sms;
-        if (sms.length() == 5){
+        if (sms.length() == 5 && !isLoading){
+            isLoading = true;
+            getViewState().showProgressDialogWindow();
             Disposable  d =  helper.confirm(login,sms)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(responseBodyResponse -> {
-                        if (responseBodyResponse.isSuccessful())
-                            getViewState().showToastyMessage(Objects.requireNonNull(responseBodyResponse.body()).string());
-                        else   getViewState().showToastyMessage(Objects.requireNonNull(responseBodyResponse.errorBody()).string());
-                    }, Throwable::printStackTrace);
+                    .subscribe(responseBodyResponse -> { //Success
+                        getViewState().hideProgressDialogWindow();
+                        isLoading = false;
+                        if (responseBodyResponse.isSuccessful()) {
+                            getViewState().showToastyMessage("Аккаунт зарегистрирован");
+                            getViewState().startLoginActivity();
+                        }
+                        else{
+                            JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseBodyResponse.errorBody()).string());
+                            getViewState().showToastyMessage(jObjError.getJSONObject("data").getString("error"));
+                        }
+                    }, throwable -> {  //Timeout err, no internet, bad internet error
+                        throwable.printStackTrace();
+                        getViewState().showToastyMessage("Error, try later");
+                        getViewState().hideProgressDialogWindow();
+                        isLoading = false;
+                    });
             disposables.add(d);
         }
+    }
+
+    public void moreSms() {
+        if (!isLoading && !isTicking) {
+            isTicking = true;
+            timer.startTimer(30000);
+            getViewState().showProgressDialogWindow();
+            isLoading =true;
+            Disposable  d = helper.signUp(login, password)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(responseSignInResponse -> {
+                                isLoading = false;
+                                getViewState().hideProgressDialogWindow();
+                                if (responseSignInResponse.isSuccessful()) {
+                                    getViewState().showToastyMessage("Повторное смс отправлено");
+                                }
+                                else {
+                                    JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseSignInResponse.errorBody()).string());
+                                    getViewState().showToastyMessage(jObjError.getJSONObject("data").getString("error"));
+                                }
+                            },
+                            throwable -> {
+                                isLoading = false;
+                                throwable.printStackTrace();
+                                getViewState().hideProgressDialogWindow();
+                                getViewState().showToastyMessage("Error, try later");
+                            });
+            disposables.add(d);
+        }
+    }
+
+    @Override
+    public void onTick(long mills) {
+        getViewState().setMoreSmsText("Повторное смс через " + mills/1000 + " секунд");
+    }
+
+    @Override
+    public void onTimerFinished() {
+        getViewState().setMoreSmsText("Отправить повторное смс");
+        isTicking = false;
     }
 }

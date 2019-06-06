@@ -30,6 +30,18 @@ public class RegistrationHelper {
         return api.confirm(new ConfirmBody(login,code));
     }
 
+    public Observable<Response<ResponseBody>> requestRestore(String login){
+        Retrofit retrofit = provideRetrofit();
+        RegistrationApi api = retrofit.create(RegistrationApi.class);
+        return  api.requestRestore(new RequestRestoreBody(login));
+    }
+
+    public Observable<Response<ResponseBody>> restorePassword(String login, String password, String code){
+        Retrofit retrofit = provideRetrofit();
+        RegistrationApi api = retrofit.create(RegistrationApi.class);
+        return api.restorePassword(new RestorePasswordBody(login,password,code));
+    }
+
     private Retrofit provideRetrofit(){
         return new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -37,4 +49,5 @@ public class RegistrationHelper {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
+
 }

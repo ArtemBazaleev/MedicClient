@@ -1,9 +1,14 @@
 package com.example.medicapp.model;
 
+import com.example.medicapp.networking.data.ResponseProfile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ProfileModel {
 
-    private Double height;
-    private Double weight;
+    private double height;
+    private double weight;
     private int age;
     private String name = "";
     private String surname = "";
@@ -11,6 +16,39 @@ public class ProfileModel {
     private boolean isLazyJob;
     private boolean isDoSport;
     private String imageURL;
+
+    public ProfileModel() {
+    }
+
+    public ProfileModel(String json) {
+        JSONObject jObj = null;
+        try {
+            jObj = new JSONObject(json);
+            name = jObj.getJSONObject("data").getJSONObject("patient").getString("name");
+            surname = jObj.getJSONObject("data").getJSONObject("patient").getString("surname");
+            isMale = jObj.getJSONObject("data").getJSONObject("patient").getString("sex").equals("male");
+            isLazyJob = jObj.getJSONObject("data").getJSONObject("patient").getString("workType").equals("sedentary");
+            height = jObj.getJSONObject("data").getJSONObject("patient").getDouble("growth");
+            isDoSport = jObj.getJSONObject("data").getJSONObject("patient").getBoolean("sport");
+            weight = jObj.getJSONObject("data").getJSONObject("patient").getDouble("weight");
+            age = jObj.getJSONObject("data").getJSONObject("patient").getInt("age");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public ProfileModel(ResponseProfile profile) {
+
+        height = profile.getPatient().getGrowth();
+        weight = profile.getPatient().getWeight();
+        age = profile.getPatient().getAge();
+        name = profile.getPatient().getName();
+        surname = profile.getPatient().getSurname();
+        isMale = profile.getPatient().getSex().equals("male");
+        isLazyJob = !profile.getPatient().getWorkType().equals("active");
+        isDoSport = profile.getPatient().getSport();
+    }
 
     public String getImageURL() {
         return imageURL;
@@ -20,19 +58,19 @@ public class ProfileModel {
         this.imageURL = imageURL;
     }
 
-    public Double getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(Double height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
-    public Double getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(Double weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

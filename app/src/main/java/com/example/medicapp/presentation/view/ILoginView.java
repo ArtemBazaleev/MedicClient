@@ -13,4 +13,8 @@ public interface ILoginView extends MvpView {
     void showRestorePasswordDialog();
 
     void hideRestorePasswordDialog();
+
+    void showSmsFieldDialog();
+
+    void updateDialogModeEnterPassword();
 }

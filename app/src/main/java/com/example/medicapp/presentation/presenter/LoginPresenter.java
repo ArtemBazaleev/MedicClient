@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
@@ -24,6 +25,11 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     private String password = "";
     private RegistrationHelper helper = new RegistrationHelper();
     private SecuredSharedPreferences preferences;
+
+    private String restoreLogin = "";
+    private String restorePassword = "";
+    private String restoreCode = "";
+    private boolean flag = false;
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -60,7 +66,6 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
                     getViewState().hideLoadingIndicator();
                     getViewState().showToastyMessage("Error, try later");
                 }));
-
     }
 
     private void onSuccess(Response<ResponseSignIn> response) {
@@ -95,9 +100,71 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     }
 
     public void onRestoreSmsChanged(String s) {
-        if (s.length() == 5) {
-            getViewState().showToastyMessage("Fake Restored");
-            getViewState().hideRestorePasswordDialog();
-        }
+        restoreCode = s;
     }
+
+    public void onRestoreLoginChanged(String s){
+        if (!flag)
+            restoreLogin = s;
+    }
+
+    public void onDialogBtnClicked(){
+        Disposable d = helper.requestRestore(restoreLogin)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    if (responseBodyResponse.isSuccessful()){
+                        getViewState().showSmsFieldDialog();
+                        getViewState().showToastyMessage("Код отправлен");
+                    }else {
+                        JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseBodyResponse.errorBody()).string());
+                        getViewState().showToastyMessage(jObjError.getJSONObject("data").getString("error"));
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    getViewState().showToastyMessage("Error, try later");
+                });
+        disposables.add(d);
+    }
+
+    public void onNewPasswordChanged(String newPassword) {
+        this.restorePassword = newPassword;
+    }
+
+    public void onDialogRestoreBtnClicked(){
+        if (restoreCode.equals("") || restorePassword.equals("")){
+            getViewState().showToastyMessage("Заполните все поля");
+            return;
+        }
+        Disposable d = helper.restorePassword(restoreLogin, restorePassword, restoreCode)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    if (responseBodyResponse.isSuccessful()){
+                        getViewState().showToastyMessage("Восстановление прошло успешно");
+                        getViewState().hideRestorePasswordDialog();
+                    }else {
+                        JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseBodyResponse.errorBody()).string());
+                        getViewState().showToastyMessage(jObjError.getJSONObject("data").getString("error"));
+                    }
+
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    getViewState().showToastyMessage("Error, try later");
+                });
+        disposables.add(d);
+    }
+
+    public void setFlag(Boolean flag) {
+        this.flag = flag;
+    }
+
+//    public void smsReady() {
+//        if (restoreCode.equals("")) {
+//            getViewState().showToastyMessage("Введите код");
+//            return;
+//        }
+//        flag = true;
+//        getViewState().updateDialogModeEnterPassword();
+//    }
 }

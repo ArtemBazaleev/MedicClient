@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +19,23 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.bumptech.glide.Glide;
+import com.example.medicapp.App;
 import com.example.medicapp.R;
 import com.example.medicapp.model.ProfileModel;
+import com.example.medicapp.networking.DataApi;
+import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.presentation.presenter.ProfileFragmentPresenter;
 import com.example.medicapp.presentation.view.IProfileFragmentView;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class ProfileFragment extends MvpAppCompatFragment implements IProfileFragmentView {
 
@@ -47,6 +57,12 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
     @InjectPresenter
     ProfileFragmentPresenter presenter;
 
+    @ProvidePresenter
+    ProfileFragmentPresenter providePresenter(){
+        App app = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
+        return new ProfileFragmentPresenter(app.getmToken(), app.getmUserID());
+    }
+
     public ProfileFragment() {
     }
 
@@ -57,6 +73,12 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
         ButterKnife.bind(this,v);
         init();
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.onViewCreated();
     }
 
     private void init(){
@@ -101,8 +123,8 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length()==0)
-                    presenter.setWeight(0.0);
-                else presenter.setWeight(Double.parseDouble(s.toString()));
+                    presenter.setWeight(0.0f);
+                else presenter.setWeight(Float.parseFloat(s.toString()));
             }
             @Override
             public void afterTextChanged(Editable s) { }
@@ -114,8 +136,8 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length()==0)
-                    presenter.setHeight(0.0);
-                else presenter.setHeight(Double.parseDouble(s.toString()));
+                    presenter.setHeight(0.0f);
+                else presenter.setHeight(Float.parseFloat(s.toString()));
             }
             @Override
             public void afterTextChanged(Editable s) { }
@@ -138,8 +160,21 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
         nameTxt.setText(model.getName());
         surname.setText(model.getSurname());
         ageEditText.setText(String.valueOf(model.getAge()));
-        weightEditText.setText(String.valueOf(model.getWeight()));
-        heightEditText.setText(String.valueOf(model.getHeight()));
+        String a = Double.toString(model.getWeight());
+        weightEditText.setText(a);
+        heightEditText.setText(Double.toString(model.getHeight()));
+
+        if (model.isDoSport())
+            radioGroupSport.check(R.id.radio_do_sport);
+        else radioGroupSport.check(R.id.radio_dont_do_sport);
+
+        if (model.isLazyJob())
+            radioGroupLazy.check(R.id.radio_seat_job);
+        else radioGroupLazy.check(R.id.radio_dont_seat_job);
+
+        if (model.isMale())
+            radioGroupSex.check(R.id.radio_male);
+        else radioGroupSex.check(R.id.radio_feamale);
     }
 
     @Override

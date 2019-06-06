@@ -2,6 +2,7 @@ package com.example.medicapp.presentation.view;
 
 import com.arellomobile.mvp.MvpView;
 
+
 public interface IRegistrationView extends MvpView {
     void showToastyMessage(String message);
     void startLoginActivity();
@@ -9,4 +10,9 @@ public interface IRegistrationView extends MvpView {
     void showLoadingIndicator();
     void hideLoadingIndicator();
     void setEnabledSubmitBtn(boolean enabled);
+
+    void showProgressDialogWindow();
+    void hideProgressDialogWindow();
+
+    void setMoreSmsText(String text);
 }
