@@ -3,7 +3,8 @@ package com.example.medicapp.networking.data;
 import com.example.medicapp.Constants;
 import com.example.medicapp.model.ProfileModel;
 import com.example.medicapp.networking.DataApi;
-import com.example.medicapp.networking.registration.response.Data;
+import com.example.medicapp.networking.response.date.ResponseAvailableDate;
+import com.example.medicapp.networking.response.results.ResponseResults;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import io.reactivex.Observable;
@@ -59,7 +60,7 @@ public class DataApiHelper {
         return api.setProfile(idAndToken, id, new ProfileBody(profile));
     }
 
-    public Observable<Response<ResponseBody>> getAvailableDatesForDay(String token, String id, String date){
+    public Observable<Response<ResponseAvailableDate>> getAvailableDatesForDay(String token, String id, String date){
         Retrofit retrofit = provideRetrofit();
         String idAndToken = "token=" + token + "; " + "id=" + id;
         DataApi api = retrofit.create(DataApi.class);
@@ -76,7 +77,7 @@ public class DataApiHelper {
         return api.reserveData(idAndToken, id, new ReservationBody(date, time));
     }
 
-    public Observable<Response<ResponseBody>> getDiagnosticInfo(String token, String id){
+    public Observable<Response<ResponseResults>> getDiagnosticInfo(String token, String id){
         Retrofit retrofit = provideRetrofit();
         String idAndToken = "token=" + token + "; " + "id=" + id;
         DataApi api= retrofit.create(DataApi.class);

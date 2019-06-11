@@ -149,6 +149,6 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
 //MVP
     @Override
     public void onItemClicked(EmptyDateModel model) {
-        presenter.setTime("09:00"); //FAKE DATA
+        presenter.setTime(model.getTime()); //FAKE DATA
     }
 }

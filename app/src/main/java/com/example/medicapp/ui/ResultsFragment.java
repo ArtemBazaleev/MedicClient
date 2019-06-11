@@ -32,6 +32,7 @@ public class ResultsFragment extends MvpAppCompatFragment
 
     @BindView(R.id.recycler_results) RecyclerView recyclerView;
 
+
     @InjectPresenter
     ResultsFragmentPresenter presenter;
     @ProvidePresenter
@@ -73,7 +74,9 @@ public class ResultsFragment extends MvpAppCompatFragment
 
     @Override
     public void startActivityResultView(ResultModel resultModel) {
-        startActivity(new Intent(getContext(),ResultViewActivity.class));
+        Intent i = new Intent(getContext(), ResultViewActivity.class);
+        i.putExtra(ResultViewActivity.IMAGE_PARAM, resultModel.getUrl());
+        startActivity(i);
     }
     //MVP
 }

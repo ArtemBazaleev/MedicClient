@@ -65,7 +65,7 @@ public class EmptyDateAdapter extends RecyclerView.Adapter<EmptyDateAdapter.Empt
         private ConstraintLayout layout;
         private int position;
         private TextView textView;
-        EmptyDateModel model;
+        private EmptyDateModel model;
         EmptyDateHolder(@NonNull View itemView) {
             super(itemView);
             layout = itemView.findViewById(R.id.constraint_empty_date);
@@ -76,6 +76,7 @@ public class EmptyDateAdapter extends RecyclerView.Adapter<EmptyDateAdapter.Empt
         void onBind(EmptyDateModel model,int position){
             this.position = position;
             this.model = model;
+            textView.setText(model.getTime());
             if (model.isSelected()){
                 layout.setBackgroundResource(R.drawable.calendar_chosen_bg);
                 textView.setTextColor(Color.WHITE);
@@ -90,7 +91,7 @@ public class EmptyDateAdapter extends RecyclerView.Adapter<EmptyDateAdapter.Empt
         public void onClick(View v) {
             model.setSelected(true);
             onChekedChanged(position);
-            mListener.onItemClicked(new EmptyDateModel());
+            mListener.onItemClicked(model);
         }
     }
 

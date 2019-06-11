@@ -3,7 +3,8 @@ package com.example.medicapp.networking;
 
 import com.example.medicapp.networking.data.ProfileBody;
 import com.example.medicapp.networking.data.ReservationBody;
-import com.example.medicapp.networking.data.ResponseProfile;
+import com.example.medicapp.networking.response.date.ResponseAvailableDate;
+import com.example.medicapp.networking.response.results.ResponseResults;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -40,15 +41,15 @@ public interface DataApi {
     );
 
     @GET("patient/{patientID}/diagnosticInfo")
-    Observable<Response<ResponseBody>> getDiagnostics(
+    Observable<Response<ResponseResults>> getDiagnostics(
             @Header("Cookie") String tokenAndId,
             @Path("patientID") String userID
     );
 
-    @GET("reservation?")
-    Observable<Response<ResponseBody>> getAvailableDate(
+    @GET("reservation")
+    Observable<Response<ResponseAvailableDate>> getAvailableDate(
             @Header("Cookie") String tokenAndId,
-            @Query("day") String date
+            @Query("date") String date
     );
 
     @POST("patient/{patientID}/reserve")

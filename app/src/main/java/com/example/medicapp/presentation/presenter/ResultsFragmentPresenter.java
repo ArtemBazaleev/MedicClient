@@ -4,8 +4,10 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.medicapp.Constants;
 import com.example.medicapp.model.ResultModel;
 import com.example.medicapp.networking.data.DataApiHelper;
+import com.example.medicapp.networking.response.results.Info;
 import com.example.medicapp.presentation.view.IResultsFragmentView;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
 
     private String mToken = "";
     private String mUserID = "";
-
+    private List<ResultModel> data;
     private String TAG = "Results";
 
     public ResultsFragmentPresenter(String token, String id) {
@@ -31,19 +33,25 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
     }
 
     public void onCreateView(){
+        data = new ArrayList<>();
         Disposable d =  apiHelper.getDiagnosticInfo(mToken, mUserID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
                     if (responseBodyResponse.isSuccessful())
-                        Log.d(TAG, "onCreateView: " + responseBodyResponse.body().string());
-                    else Log.d(TAG, "onCreateView: "  + responseBodyResponse.errorBody().string());
+                    {
+                        for (String i: responseBodyResponse.body().getData().getInfo().get(0).getImages()) {
+                            data.add(new ResultModel(Constants.BASE_URL_IMAGE + i));
+                        }
+                        getViewState().loadResults( data);
+                    }
+                    else{
+                        Log.d(TAG, "onCreateView: "  + responseBodyResponse.errorBody().string());
+                    }
                 },throwable -> {
                     getViewState().showTastyMessage("Error, try later");
                 });
 
-
-        getViewState().loadResults(provideData());
     }
 
     private List<ResultModel> provideData() {

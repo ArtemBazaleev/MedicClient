@@ -37,7 +37,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
 
     @Override
     public void onBindViewHolder(@NonNull ResultHolder resultHolder, int i) {
-
+        resultHolder.bind(mData.get(i));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
 
     public class ResultHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ConstraintLayout constraintLayout;
-
+        private ResultModel model;
         public ResultHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.constraintLayout5);
@@ -57,7 +57,11 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
 
         @Override
         public void onClick(View v) {
-            mListener.onResult(new ResultModel());
+            mListener.onResult(model);
+        }
+
+        public void bind(ResultModel model) {
+            this.model = model;
         }
     }
 

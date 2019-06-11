@@ -6,8 +6,8 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.model.EmptyDateModel;
-import com.example.medicapp.networking.DataApi;
 import com.example.medicapp.networking.data.DataApiHelper;
+import com.example.medicapp.networking.response.date.Time;
 import com.example.medicapp.presentation.view.IEntryToTheDoctorFragmentView;
 
 import org.json.JSONObject;
@@ -17,9 +17,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.disposables.Disposables;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
@@ -77,7 +77,7 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
                 .subscribe(responseBodyResponse -> {
                     if (responseBodyResponse.isSuccessful()) {
                         Log.d("Presenter", "onSubmitBtnClicked: " + responseBodyResponse.body().string());
-                        JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseBodyResponse.errorBody()).string());
+                        JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseBodyResponse.body()).string());
                         getViewState().showToastyMessage(jObjError.getString("message"));
                     }
                     else {
@@ -97,23 +97,23 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
         String s = DateFormat.format("dd.MM.yyyy", startDate.getTime()).toString();
         getViewState().setDateText(s);
         this.chosenDate = s;
-
+        List<EmptyDateModel> models = new ArrayList<>();
         Disposable d = dataApiHelper.getAvailableDatesForDay(token, id, s)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseBodyResponse -> {
-                    if (responseBodyResponse.isSuccessful())
-                        Log.d("Presenter", "onDateSelected: " + responseBodyResponse.body().string());
-                    else Log.d("Presenter", "onDateSelected: " + responseBodyResponse.errorBody().string());
-                },throwable -> {
-                    getViewState().showToastyMessage("Error, try later");
-                });
+                .flatMap(responseAvailableDateResponse -> Observable.fromIterable(Objects.requireNonNull(responseAvailableDateResponse.body()).getData().getHours().getTimes()))
+                .filter(time -> !time.getReserved())
+                .toList()
+                .subscribe(response -> {
+                    for (Time i :response) {
+                        models.add(new EmptyDateModel(i.getTime()));
+                    }
+                    getViewState().loadAvailableDate(models);
+                },throwable -> getViewState().showToastyMessage("Error, try later"));
 
 
-        List<EmptyDateModel> models = new ArrayList<>();
-        for (int i =0; i<5;i++)
-            models.add(new EmptyDateModel());
-        getViewState().loadAvailableDate(models);
+
+
         getViewState().hideDatePickerDialog();
     }
 }

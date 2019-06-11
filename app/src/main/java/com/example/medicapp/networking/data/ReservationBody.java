@@ -1,20 +1,20 @@
 package com.example.medicapp.networking.data;
 
 public class ReservationBody {
-    private String day;
+    private String date;
     private String time;
 
-    public ReservationBody(String day, String time) {
-        this.day = day;
+    public ReservationBody(String date, String time) {
+        this.date = date;
         this.time = time;
     }
 
     public String getDay() {
-        return day;
+        return date;
     }
 
-    public void setDay(String day) {
-        this.day = day;
+    public void setDay(String date) {
+        this.date = date;
     }
 
     public String getTime() {
