@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.medicapp.App;
 import com.example.medicapp.R;
 import com.example.medicapp.model.ResultModel;
 import com.example.medicapp.adapters.ResultsAdapter;
@@ -19,6 +21,7 @@ import com.example.medicapp.presentation.presenter.ResultsFragmentPresenter;
 import com.example.medicapp.presentation.view.IResultsFragmentView;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +34,11 @@ public class ResultsFragment extends MvpAppCompatFragment
 
     @InjectPresenter
     ResultsFragmentPresenter presenter;
+    @ProvidePresenter
+    ResultsFragmentPresenter providePresenter(){
+        App app = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
+        return new ResultsFragmentPresenter(app.getmToken(), app.getmUserID());
+    }
 
     public ResultsFragment() { }
 

@@ -28,6 +28,13 @@ public class DataApiHelper {
         return api.getExercise(idAndToken);
     }
 
+    public Observable<Response<ResponseBody>> getSuggestedExercisec(String token, String id){
+        String idAndToken  = "token=" + token + "; " + "id=" + id;
+        Retrofit retrofit = provideRetrofit();
+        DataApi api = retrofit.create(DataApi.class);
+        return api.getSuggestedExercises(idAndToken, id);
+    }
+
     public Observable<Response<ResponseBody>> getProfile(String token, String id){
         String idAndToken = "token=" + token + "; " + "id=" + id;
         Retrofit retrofit = provideRetrofit();
@@ -50,5 +57,29 @@ public class DataApiHelper {
                 model.isLazyJob() ? "sedentary":"active"
         );
         return api.setProfile(idAndToken, id, new ProfileBody(profile));
+    }
+
+    public Observable<Response<ResponseBody>> getAvailableDatesForDay(String token, String id, String date){
+        Retrofit retrofit = provideRetrofit();
+        String idAndToken = "token=" + token + "; " + "id=" + id;
+        DataApi api = retrofit.create(DataApi.class);
+        return api.getAvailableDate(idAndToken, date);
+    }
+
+    public Observable<Response<ResponseBody>> reserveData(String token,
+                                                          String id,
+                                                          String date,
+                                                          String time){
+        Retrofit retrofit = provideRetrofit();
+        String idAndToken = "token=" + token + "; " + "id=" + id;
+        DataApi api = retrofit.create(DataApi.class);
+        return api.reserveData(idAndToken, id, new ReservationBody(date, time));
+    }
+
+    public Observable<Response<ResponseBody>> getDiagnosticInfo(String token, String id){
+        Retrofit retrofit = provideRetrofit();
+        String idAndToken = "token=" + token + "; " + "id=" + id;
+        DataApi api= retrofit.create(DataApi.class);
+        return api.getDiagnostics(idAndToken, id);
     }
 }

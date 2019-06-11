@@ -16,4 +16,8 @@ public interface IProfileFragmentView extends MvpView {
     void setProfilePhoto(Uri uri);
 
     void setEnabledSubmitBtn(boolean enabled);
+
+    void showProgress();
+
+    void hideProgress();
 }

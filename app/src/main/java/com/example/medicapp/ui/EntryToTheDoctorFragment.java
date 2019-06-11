@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.medicapp.App;
 import com.example.medicapp.model.EmptyDateModel;
 import com.example.medicapp.R;
 import com.example.medicapp.adapters.EmptyDateAdapter;
@@ -36,6 +38,12 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
 
     @InjectPresenter
     EntryToTheDoctorFragmentPresenter presenter;
+
+    @ProvidePresenter
+    EntryToTheDoctorFragmentPresenter providePresemter(){
+        App app  = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
+        return  new EntryToTheDoctorFragmentPresenter(app.getmToken(), app.getmUserID());
+    }
 
     @BindView(R.id.chose_date_btn_entry) Button choseDate;
     @BindView(R.id.recyclerView_empty_date) RecyclerView recyclerView;
@@ -141,6 +149,6 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
 //MVP
     @Override
     public void onItemClicked(EmptyDateModel model) {
-
+        presenter.setTime("09:00"); //FAKE DATA
     }
 }

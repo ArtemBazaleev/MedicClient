@@ -218,8 +218,8 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         if (dialog!=null)
             dialog.dismiss();
     }

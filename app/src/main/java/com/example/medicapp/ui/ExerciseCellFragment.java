@@ -80,6 +80,7 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_exercise_cell, container, false);
         recyclerView = v.findViewById(R.id.recycler_exercise_cell);
+        presenter.setMode(this.mMode);
         // Inflate the layout for this fragment
         return v;
     }

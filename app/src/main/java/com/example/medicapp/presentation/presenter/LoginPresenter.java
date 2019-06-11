@@ -72,7 +72,6 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
         getViewState().hideLoadingIndicator();
         getViewState().setEnabledLoginBtn(true);
         if (response.isSuccessful()){
-            getViewState().showToastyMessage(response.body() != null ? response.body().getMessage() : "");
             preferences.setToken(Objects.requireNonNull(response.body()).getData().getToken());
             preferences.setUserID(Objects.requireNonNull(response.body()).getData().getId());
             getViewState().startMainActivity(

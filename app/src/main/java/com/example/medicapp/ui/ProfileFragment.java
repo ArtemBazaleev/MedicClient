@@ -8,12 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -24,8 +24,6 @@ import com.bumptech.glide.Glide;
 import com.example.medicapp.App;
 import com.example.medicapp.R;
 import com.example.medicapp.model.ProfileModel;
-import com.example.medicapp.networking.DataApi;
-import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.presentation.presenter.ProfileFragmentPresenter;
 import com.example.medicapp.presentation.view.IProfileFragmentView;
 
@@ -34,8 +32,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class ProfileFragment extends MvpAppCompatFragment implements IProfileFragmentView {
 
@@ -51,7 +47,7 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
     @BindView(R.id.profile_radiogroup_sex) RadioGroup radioGroupSex;
     @BindView(R.id.profile_radiogroup_lazy) RadioGroup radioGroupLazy;
     @BindView(R.id.profile_radiogroup_sport) RadioGroup radioGroupSport;
-
+    @BindView(R.id.progressBar2) ProgressBar progressBar;
 
 
     @InjectPresenter
@@ -196,6 +192,16 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
     @Override
     public void setEnabledSubmitBtn(boolean enabled) {
         submit.setEnabled(enabled);
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
     }
 
     //MVP

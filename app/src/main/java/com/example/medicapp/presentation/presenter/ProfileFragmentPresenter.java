@@ -10,6 +10,7 @@ import com.example.medicapp.networking.DataApi;
 import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.presentation.view.IProfileFragmentView;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,6 +27,7 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
     private String token = "";
     private String userID = "";
     private DataApiHelper dataApiHelper;
+    DecimalFormat df = new DecimalFormat("#.##");
     private CompositeDisposable disposables = new CompositeDisposable();
 
     public ProfileFragmentPresenter(String token, String userID){
@@ -36,31 +38,43 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
     }
 
     public void onViewCreated(){
+        getViewState().showProgress();
         Disposable d = dataApiHelper.getProfile(token, userID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
+                    getViewState().hideProgress();
                     if (responseBodyResponse.isSuccessful())
                         getViewState().setProfileData(new ProfileModel(responseBodyResponse.body().string()));
                     else
                         Log.d("Profile", "onCreateView: " + responseBodyResponse.errorBody().string());
-                }, Throwable::printStackTrace);
+                }, throwable -> {
+                    getViewState().hideProgress();
+                    throwable.printStackTrace();
+                    getViewState().showToastyMessage("Error, try later");
+                });
         disposables.add(d);
     }
 
     public void onSubmitBtnClicked(){
-        dataApiHelper.setProfile(token, userID,profile)
+        getViewState().showProgress();
+        Disposable d = dataApiHelper.setProfile(token, userID,profile)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         responseBodyResponse -> {
+                            getViewState().hideProgress();
                             if (responseBodyResponse.isSuccessful())
                                 getViewState().showToastyMessage("Успех");
                             else
                                 Log.d("Profile", "onSubmitBtnClicked: " + responseBodyResponse.errorBody().string());
                         },
-                        Throwable::printStackTrace
+                        throwable -> {
+                            getViewState().hideProgress();
+                            getViewState().showToastyMessage("Error, try later");
+                        }
                 );
+        disposables.add(d);
     }
 
     public void setMale(boolean isMale){
@@ -78,7 +92,9 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
     }
 
     public void setWeight(float weight){
-        profile.setWeight(weight);
+        String formatted = df.format(weight);
+        formatted =  formatted.replace(",",".");
+        profile.setWeight(Double.parseDouble(formatted));
     }
 
     public void setAge(int age){
@@ -86,7 +102,9 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
     }
 
     public void setHeight(float height){
-        profile.setHeight(height);
+        String formatted = df.format(height);
+        formatted =  formatted.replace(",",".");
+        profile.setHeight(Double.parseDouble(formatted));
     }
 
     public void setDoSport(boolean isDoSport){

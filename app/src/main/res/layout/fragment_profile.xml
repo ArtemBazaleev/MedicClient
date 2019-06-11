@@ -178,10 +178,11 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/text_profile_bg"
                 android:gravity="end|center"
+                android:inputType="numberSigned|numberDecimal"
+                android:maxLength="6"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:maxLength="6"
-                android:inputType="number"
+                android:digits="0123456789."
                 android:text="176"
                 app:layout_constraintBottom_toBottomOf="@+id/textView15"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -194,13 +195,14 @@
                 android:layout_height="34dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:digits="0123456789."
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/text_profile_bg"
                 android:gravity="end|center"
+                android:inputType="numberSigned|numberDecimal"
+                android:maxLength="6"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:maxLength="6"
-                android:inputType="number"
                 android:text="52"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView15"
@@ -215,6 +217,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/text_profile_bg"
                 android:gravity="end|center"
+                android:digits="0123456789"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:inputType="number"
@@ -385,5 +388,18 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

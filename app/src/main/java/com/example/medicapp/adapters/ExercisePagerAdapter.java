@@ -18,9 +18,9 @@ public class ExercisePagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int i) {
         switch (i){
             case 0:
-                return new ExerciseCellFragment();
+                return ExerciseCellFragment.newInstance(ExerciseCellFragment.MODE_ALL);
             case 1:
-                return new ExerciseCellFragment();
+                return ExerciseCellFragment.newInstance(ExerciseCellFragment.MODE_SUGGESTED);
             default:
                 return null;
         }
