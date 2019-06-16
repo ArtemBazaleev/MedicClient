@@ -10,8 +10,12 @@ import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.networking.response.results.Info;
 import com.example.medicapp.presentation.view.IResultsFragmentView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -38,19 +42,27 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
+                    Log.d(TAG, "onCreateView: " + responseBodyResponse.code());
                     if (responseBodyResponse.isSuccessful())
                     {
-                        for (String i: responseBodyResponse.body().getData().getInfo().get(0).getImages()) {
-                            data.add(new ResultModel(Constants.BASE_URL_IMAGE + i));
+                        Log.d(TAG, "onCreateView: "+ responseBodyResponse.body().toString());
+                        Info info = responseBodyResponse.body().getData().getInfo().get(0);
+                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        Date date = new Date(info.getCreated());
+                        String today = formatter.format(date);
+                        data.add(new ResultModel("",info.getConclusion(),"Заключение:", ResultModel.TYPE_CONCLUSION));
+                        for (String i:info.getBackbone()) {
+                            data.add(new ResultModel(Constants.BASE_URL_IMAGE + i, info.getConclusion(), today, ResultModel.TYPE_BACKBONE));
                         }
-                        getViewState().loadResults( data);
+                        for (String i:info.getOther()) {
+                            data.add(new ResultModel(Constants.BASE_URL_IMAGE + i, "", today, ResultModel.TYPE_OTHER));
+                        }
+                        getViewState().loadResults(data);
                     }
                     else{
                         Log.d(TAG, "onCreateView: "  + responseBodyResponse.errorBody().string());
                     }
-                },throwable -> {
-                    getViewState().showTastyMessage("Error, try later");
-                });
+                },throwable -> getViewState().showTastyMessage("Error, try later"));
 
     }
 

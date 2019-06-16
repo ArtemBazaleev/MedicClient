@@ -6,15 +6,22 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Info{
+
     @SerializedName("id")
     @Expose
     private String id;
-    @SerializedName("images")
+    @SerializedName("conclusion")
     @Expose
-    private List<String> images = null;
+    private String conclusion;
+    @SerializedName("backbone")
+    @Expose
+    private List<String> backbone = null;
+    @SerializedName("other")
+    @Expose
+    private List<String> other = null;
     @SerializedName("created")
     @Expose
-    private Integer created;
+    private Long created;
 
     public String getId() {
         return id;
@@ -24,19 +31,36 @@ public class Info{
         this.id = id;
     }
 
-    public List<String> getImages() {
-        return images;
+    public String getConclusion() {
+        return conclusion;
     }
 
-    public void setImages(List<String> images) {
-        this.images = images;
+    public void setConclusion(String conclusion) {
+        this.conclusion = conclusion;
     }
 
-    public Integer getCreated() {
+    public List<String> getBackbone() {
+        return backbone;
+    }
+
+    public void setBackbone(List<String> backbone) {
+        this.backbone = backbone;
+    }
+
+    public List<String> getOther() {
+        return other;
+    }
+
+    public void setOther(List<String> other) {
+        this.other = other;
+    }
+
+    public Long getCreated() {
         return created;
     }
 
-    public void setCreated(Integer created) {
+    public void setCreated(Long created) {
         this.created = created;
     }
+
 }

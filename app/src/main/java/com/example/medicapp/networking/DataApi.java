@@ -4,6 +4,7 @@ package com.example.medicapp.networking;
 import com.example.medicapp.networking.data.ProfileBody;
 import com.example.medicapp.networking.data.ReservationBody;
 import com.example.medicapp.networking.response.date.ResponseAvailableDate;
+import com.example.medicapp.networking.response.exercise.ResponseExercise;
 import com.example.medicapp.networking.response.results.ResponseResults;
 
 import io.reactivex.Observable;
@@ -19,7 +20,7 @@ import retrofit2.http.Query;
 public interface DataApi {
 
     @GET("exercise")
-    Observable<Response<ResponseBody>> getExercise(@Header("Cookie") String tokenAndId);
+    Observable<Response<ResponseExercise>> getExercise(@Header("Cookie") String tokenAndId);
 
     @GET("patient/{patientID}/exercise")
     Observable<Response<ResponseBody>> getSuggestedExercises(
@@ -49,7 +50,8 @@ public interface DataApi {
     @GET("reservation")
     Observable<Response<ResponseAvailableDate>> getAvailableDate(
             @Header("Cookie") String tokenAndId,
-            @Query("date") String date
+            @Query("date") String date,
+            @Query("reserved") boolean reserved
     );
 
     @POST("patient/{patientID}/reserve")

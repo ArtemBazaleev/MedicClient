@@ -17,4 +17,6 @@ public interface IEntryToTheDoctorFragmentView extends MvpView {
     void setDateText(String txt);
 
     void setActiveSubmitBtn(boolean active);
+
+    void showAlertDialog(String header, String message);
 }

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.medicapp.R;
 import com.example.medicapp.model.ResultModel;
@@ -49,9 +50,14 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
     public class ResultHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ConstraintLayout constraintLayout;
         private ResultModel model;
+        private TextView date;
+        private TextView conclusion;
+
         public ResultHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.constraintLayout5);
+            date = itemView.findViewById(R.id.textView8);
+            conclusion = itemView.findViewById(R.id.text_conclusion);
             constraintLayout.setOnClickListener(this);
         }
 
@@ -62,6 +68,16 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
 
         public void bind(ResultModel model) {
             this.model = model;
+            if (model.getType() == ResultModel.TYPE_CONCLUSION){
+                constraintLayout.setVisibility(View.GONE);
+                //date.setVisibility(View.GONE);
+                date.setText(model.getCreated());
+                conclusion.setText(model.getDesc());
+                conclusion.setVisibility(View.VISIBLE);
+            }
+            else {
+                date.setText(model.getCreated());
+            }
         }
     }
 

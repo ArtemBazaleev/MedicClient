@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -26,6 +27,9 @@ import com.example.medicapp.presentation.view.IExerciseCellFragment;
 
 import java.util.List;
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +47,8 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
     private ExerciseAdapter adapter;
     private RecyclerView recyclerView;
     boolean isLoading = false;
+    @BindView(R.id.progressBar3)
+    ProgressBar progressBar;
 
     @InjectPresenter
     ExerciseCellFragmentPresenter presenter;
@@ -79,6 +85,7 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_exercise_cell, container, false);
+        ButterKnife.bind(this, v);
         recyclerView = v.findViewById(R.id.recycler_exercise_cell);
         presenter.setMode(this.mMode);
         // Inflate the layout for this fragment
@@ -106,6 +113,7 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL,false));
         adapter = new ExerciseAdapter(getContext(), data,this);
+        adapter.setClickedListener(model -> presenter.onItemClicked(model));
         recyclerView.setAdapter(adapter);
     }
 
@@ -115,8 +123,20 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
     }
 
     @Override
-    public void startVideoViewActivity() {
-        Objects.requireNonNull(getActivity()).startActivity(new Intent(getContext(), VideoViewActivity.class));
+    public void startVideoViewActivity(String url) {
+        Intent i = new Intent(getContext(), VideoViewActivity.class);
+        i.putExtra(VideoViewActivity.VIDEO, url);
+        Objects.requireNonNull(getActivity()).startActivity(i);
+    }
+
+    @Override
+    public void showLoadingIndicator() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+        progressBar.setVisibility(View.INVISIBLE);
     }
     //MVP
 }

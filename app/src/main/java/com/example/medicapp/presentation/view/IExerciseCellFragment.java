@@ -12,5 +12,9 @@ public interface IExerciseCellFragment extends MvpView {
 
     void addExerciseModels(List<ExerciseModel> data);
 
-    void startVideoViewActivity();
+    void startVideoViewActivity(String url);
+
+    void showLoadingIndicator();
+
+    void hideLoadingIndicator();
 }

@@ -1,5 +1,6 @@
 package com.example.medicapp.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -48,12 +49,13 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     @BindView(R.id.chose_date_btn_entry) Button choseDate;
     @BindView(R.id.recyclerView_empty_date) RecyclerView recyclerView;
     @BindView(R.id.submit_btn_entry) Button submitBtn;
-    @BindView(R.id.editText3)
-    EditText nameTxt;
+    @BindView(R.id.editText3) EditText nameTxt;
+    @BindView(R.id.login) EditText family;
 
     private boolean isShownDialog = false;
 
     private AlertDialog alertDialog;
+    private AlertDialog dialog;
 
     public EntryToTheDoctorFragment() {
         // Required empty public constructor
@@ -70,9 +72,7 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
         submitBtn.setOnClickListener(l-> presenter.onSubmitBtnClicked());
         nameTxt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -80,9 +80,20 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s) { }
+        });
 
+        family.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.onSurnameChanged(s.toString());
             }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
         });
         return v;
     }
@@ -112,6 +123,16 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     @Override
     public void setActiveSubmitBtn(boolean active) {
         submitBtn.setEnabled(active);
+    }
+
+    @Override
+    public void showAlertDialog(String header, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(header)
+                .setMessage(message)
+                .setPositiveButton("ОК", (dialog, id) -> dialog.cancel());
+        dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -146,7 +167,15 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
             alertDialog.hide();
         }
     }
-//MVP
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        alertDialog.dismiss();
+        dialog.dismiss();
+    }
+
+    //MVP
     @Override
     public void onItemClicked(EmptyDateModel model) {
         presenter.setTime(model.getTime()); //FAKE DATA

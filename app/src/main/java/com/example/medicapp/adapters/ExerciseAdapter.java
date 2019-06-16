@@ -22,11 +22,16 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     private Context mContext;
     private List<ExerciseModel> mData;
     private IOnLoadMore loadMore;
+    private OnItemClicked clickedListener;
 
     public ExerciseAdapter(Context mContext, List<ExerciseModel> mData, IOnLoadMore loadMore) {
         this.mContext = mContext;
         this.mData = mData;
         this.loadMore = loadMore;
+    }
+
+    public void setClickedListener(OnItemClicked clickedListener) {
+        this.clickedListener = clickedListener;
     }
 
     public void addData(List<ExerciseModel> models){
@@ -56,6 +61,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         ImageView imageView;
         CardView cardView;
         TextView textView;
+        ExerciseModel exerciseModel;
 
         ExerciseHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,15 +73,22 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
 
         void onBind(ExerciseModel model){
+            exerciseModel = model;
             Picasso.with(mContext)
                     .load(model.getUrlImage())
                     .error(R.drawable.ic_close_gray)
                     .into(imageView);
+            textView.setText(model.getName());
+
         }
 
         @Override
         public void onClick(View v) {
-            loadMore.loadMore(0);
+            clickedListener.onVideoClicked(exerciseModel);
         }
+    }
+
+    public interface OnItemClicked{
+        void onVideoClicked(ExerciseModel model);
     }
 }

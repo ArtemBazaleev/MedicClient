@@ -1,9 +1,9 @@
-package com.example.medicapp.networking.response.results;
+package com.example.medicapp.networking.response.exercise;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResponseResults {
+public class ResponseExercise {
 
     @SerializedName("message")
     @Expose
@@ -27,4 +27,5 @@ public class ResponseResults {
     public void setData(Data data) {
         this.data = data;
     }
+
 }

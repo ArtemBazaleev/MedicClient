@@ -6,12 +6,15 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.model.ExerciseModel;
 import com.example.medicapp.networking.data.DataApiHelper;
+import com.example.medicapp.networking.response.exercise.Exercise;
+import com.example.medicapp.networking.response.exercise.ResponseExercise;
 import com.example.medicapp.presentation.view.IExerciseCellFragment;
 import com.example.medicapp.ui.ExerciseCellFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -40,24 +43,30 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
 
     private void provideData(){
         if (mode == ExerciseCellFragment.MODE_ALL) {
+            getViewState().showLoadingIndicator();
             d.add(apiHelper.getExercises(mToken, mID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::onSuccess, Throwable::printStackTrace));
-            List<ExerciseModel> models = new ArrayList<>();
-            for (int i = 0; i < 10; i++)
-                models.add(new ExerciseModel());
-            getViewState().loadExerciseModels(models);
+                    .subscribe(this::onSuccess, throwable -> {
+                        throwable.printStackTrace();
+                        getViewState().hideLoadingIndicator();
+                        getViewState().showToastyMessage("Error, try later");
+                    }));
         }
         else {
-            d.add(apiHelper.getExercises(mToken, mID)
+            getViewState().showLoadingIndicator();
+            d.add(apiHelper.getSuggestedExercisec(mToken, mID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(responseBodyResponse -> {
                         if (responseBodyResponse.isSuccessful())
                             Log.d("Exercice", "mode: Suggested" + responseBodyResponse.body().string());
                         else Log.d("Exercise", "onError: " + responseBodyResponse.errorBody().string());
-                    }, Throwable::printStackTrace));
+                    }, throwable -> {
+                        throwable.printStackTrace();
+                        getViewState().hideLoadingIndicator();
+                        getViewState().showToastyMessage("Error, try later");
+                    }));
 
             List<ExerciseModel> models = new ArrayList<>();
             for (int i = 0; i < 10; i++)
@@ -66,19 +75,20 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
         }
     }
 
-    private void onSuccess(Response<ResponseBody> responseBodyResponse) {
+    private void onSuccess(Response<ResponseExercise> responseBodyResponse) {
+        getViewState().hideLoadingIndicator();
         if (responseBodyResponse.isSuccessful()) {
-            try {
-                Log.d("Exercise", "mode: All");
-                Log.d("Exercise", "onSuccess: " + responseBodyResponse.body().string());
-            } catch (IOException e) {
-                e.printStackTrace();
+            Log.d("Exercise", "mode: All");
+            List<ExerciseModel> models = new ArrayList<>();
+            for (Exercise i: Objects.requireNonNull(responseBodyResponse.body()).getData().getExercises()){
+                models.add(new ExerciseModel(i));
             }
+            getViewState().loadExerciseModels(models);
         }
         else {
             try {
                 Log.d("Exercise", "Token id: " + mToken + " " + mID);
-                Log.d("Exercise", "onError: " + responseBodyResponse.errorBody().string());
+                Log.d("Exercise", "onError: " + Objects.requireNonNull(responseBodyResponse.errorBody()).string());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -91,7 +101,7 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
     }
 
     public void onItemClicked(ExerciseModel exerciseModel){
-        getViewState().startVideoViewActivity();
+        getViewState().startVideoViewActivity(exerciseModel.getUrlVideo());
     }
 
     public void setMode(int mMode) {

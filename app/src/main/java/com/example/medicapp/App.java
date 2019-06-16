@@ -11,45 +11,21 @@ import java.net.URISyntaxException;
 public class App extends Application implements ITimerSms {
 
     private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("https://socket-io-chat.now.sh/");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private CountDownTimer timer;
     private boolean isTicking = false;
     private ITimerListener listener;
-
-
     private String mToken = "";
-
-    public String getmToken() {
-        return mToken;
-    }
-
-    public void setmToken(String mToken) {
-        this.mToken = mToken;
-    }
     private String mUserID = "";
-
-    public String getmUserID() {
-        return mUserID;
-    }
-
-    public void setmUserID(String mUserID) {
-        this.mUserID = mUserID;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-    }
-
-    public Socket getmSocket(){
-        return mSocket;
+        try{
+            mSocket = IO.socket(Constants.SOCKET_IO);
+        }catch (URISyntaxException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -86,4 +62,28 @@ public class App extends Application implements ITimerSms {
     public boolean isTicking() {
         return isTicking;
     }
+
+
+    public String getmToken() {
+        return mToken;
+    }
+
+    public void setmToken(String mToken) {
+        this.mToken = mToken;
+    }
+
+
+    public String getmUserID() {
+        return mUserID;
+    }
+
+    public void setmUserID(String mUserID) {
+        this.mUserID = mUserID;
+    }
+
+    public Socket getmSocket(){
+        return mSocket;
+    }
+
+
 }

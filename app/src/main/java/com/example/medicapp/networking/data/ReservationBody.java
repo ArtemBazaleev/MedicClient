@@ -3,10 +3,30 @@ package com.example.medicapp.networking.data;
 public class ReservationBody {
     private String date;
     private String time;
+    private String name;
+    private String surname;
 
-    public ReservationBody(String date, String time) {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public ReservationBody(String date, String time, String name, String surname) {
         this.date = date;
         this.time = time;
+        this.name = name;
+        this.surname = surname;
     }
 
     public String getDay() {

@@ -67,21 +67,27 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
 
     public void onSubmitBtnClicked(){
         if (name.equals("")) {
-            getViewState().showToastyMessage("Name empty");
+            getViewState().showToastyMessage("Введите имя");
+            return;
+        }
+        if (family.equals("")){
+            getViewState().showToastyMessage("Введите фамилию");
             return;
         }
 
-        Disposable d = dataApiHelper.reserveData(token, id, chosenDate, chosenTime)
+        Disposable d = dataApiHelper.reserveData(token, id, chosenDate, chosenTime, name, family)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
                     if (responseBodyResponse.isSuccessful()) {
-                        Log.d("Presenter", "onSubmitBtnClicked: " + responseBodyResponse.body().string());
-                        JSONObject jObjError = new JSONObject(Objects.requireNonNull(responseBodyResponse.body()).string());
-                        getViewState().showToastyMessage(jObjError.getString("message"));
+                        String response = Objects.requireNonNull(responseBodyResponse.body()).string();
+                        Log.d("Presenter", "onSubmitBtnClicked: " + response);
+                        getViewState().showAlertDialog(String.valueOf(responseBodyResponse.code()), response);
                     }
                     else {
-                        Log.d("Presenter", "onSubmitBtnClicked: " + responseBodyResponse.errorBody().string());
+                        String response = Objects.requireNonNull(responseBodyResponse.errorBody()).string();
+                        Log.d("Presenter", "onSubmitBtnClicked: " + response);
+                        getViewState().showAlertDialog(String.valueOf(responseBodyResponse.code()), response);
                     }
                 }, throwable -> {
                     throwable.printStackTrace();
@@ -98,7 +104,7 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
         getViewState().setDateText(s);
         this.chosenDate = s;
         List<EmptyDateModel> models = new ArrayList<>();
-        Disposable d = dataApiHelper.getAvailableDatesForDay(token, id, s)
+        Disposable d = dataApiHelper.getAvailableDatesForDay(token, id, s, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(responseAvailableDateResponse -> Observable.fromIterable(Objects.requireNonNull(responseAvailableDateResponse.body()).getData().getHours().getTimes()))
@@ -110,10 +116,6 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
                     }
                     getViewState().loadAvailableDate(models);
                 },throwable -> getViewState().showToastyMessage("Error, try later"));
-
-
-
-
         getViewState().hideDatePickerDialog();
     }
 }
