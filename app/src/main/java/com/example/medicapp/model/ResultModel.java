@@ -1,5 +1,7 @@
 package com.example.medicapp.model;
 
+import com.example.medicapp.Constants;
+
 public class ResultModel{
     public static final int TYPE_BACKBONE = 0;
     public static final int TYPE_CONCLUSION = 2;
@@ -8,6 +10,7 @@ public class ResultModel{
     private String url;
     private String desc;
     private String created;
+    private String [] backBoneImage;
 
     private int type;
 
@@ -21,6 +24,17 @@ public class ResultModel{
 
     public String getCreated() {
         return created;
+    }
+
+    public String[] getBackBoneImage() {
+        return backBoneImage;
+    }
+
+    public void setBackBoneImage(String[] backBoneImage) {
+        this.backBoneImage = backBoneImage;
+        for (int i = 0; i < this.backBoneImage.length; i++) {
+            this.backBoneImage[i] = Constants.BASE_URL_IMAGE  + this.backBoneImage[i];
+        }
     }
 
     public void setCreated(String created) {

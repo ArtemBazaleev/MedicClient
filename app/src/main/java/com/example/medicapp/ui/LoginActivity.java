@@ -49,6 +49,7 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
     private AlertDialog dialog;
     private TextView textDialog;
     private TextWatcher smsRestoreTextWatcher;
+    private ProgressBar progressDialog;
 
     @ProvidePresenter
     LoginPresenter providePresenter(){
@@ -127,12 +128,13 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
     @Override
     public void showLoadingIndicator() {
         progressBar.setVisibility(View.VISIBLE);
-
+        enter.setImageResource(0);
     }
 
     @Override
     public void hideLoadingIndicator() {
         progressBar.setVisibility(View.GONE);
+        enter.setImageResource(R.drawable.ic_arrow_forward_black_24dp);
     }
 
     @Override
@@ -140,6 +142,7 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.custom_dialog_restore_account,null);
         bDialog = v.findViewById(R.id.sendSmsBtn);
+        progressDialog = v.findViewById(R.id.progressBar_restore_dialog);
         bDialog.setOnClickListener(l->presenter.onDialogBtnClicked());
         loginDialog = v.findViewById(R.id.login_phone);
         smsCodeDialog = v.findViewById(R.id.sms_code);
@@ -218,8 +221,20 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void showProgressDialog() {
+        if (progressDialog!=null)
+            progressDialog.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        if (progressDialog != null)
+            progressDialog.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if (dialog!=null)
             dialog.dismiss();
     }

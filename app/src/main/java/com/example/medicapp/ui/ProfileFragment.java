@@ -143,7 +143,7 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
         radioGroupLazy.setOnCheckedChangeListener(radioGroupListener);
         radioGroupSex.setOnCheckedChangeListener(radioGroupListener);
         radioGroupSport.setOnCheckedChangeListener(radioGroupListener);
-        profileImage.setOnClickListener(l->presenter.onPhotoClicked());
+        //profileImage.setOnClickListener(l->presenter.onPhotoClicked());
     }
 //MVP
     @Override

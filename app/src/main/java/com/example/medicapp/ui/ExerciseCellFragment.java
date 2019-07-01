@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.appunite.appunitevideoplayer.PlayerActivity;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -47,8 +50,9 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
     private ExerciseAdapter adapter;
     private RecyclerView recyclerView;
     boolean isLoading = false;
-    @BindView(R.id.progressBar3)
-    ProgressBar progressBar;
+    @BindView(R.id.progressBar3) ProgressBar progressBar;
+    @BindView(R.id.not_found_content_exercise) ConstraintLayout contentNotFound;
+    @BindView(R.id.layoutRefreshExercise) SwipeRefreshLayout refreshLayout;
 
     @InjectPresenter
     ExerciseCellFragmentPresenter presenter;
@@ -88,6 +92,7 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
         ButterKnife.bind(this, v);
         recyclerView = v.findViewById(R.id.recycler_exercise_cell);
         presenter.setMode(this.mMode);
+        refreshLayout.setOnRefreshListener(presenter::onRefresh);
         // Inflate the layout for this fragment
         return v;
     }
@@ -124,6 +129,9 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
 
     @Override
     public void startVideoViewActivity(String url) {
+//        startActivity(PlayerActivity.getVideoPlayerIntent(Objects.requireNonNull(getContext()),
+//                url,
+//                "", R.drawable.ic_play_arrow_black_24dp));
         Intent i = new Intent(getContext(), VideoViewActivity.class);
         i.putExtra(VideoViewActivity.VIDEO, url);
         Objects.requireNonNull(getActivity()).startActivity(i);
@@ -131,12 +139,22 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
 
     @Override
     public void showLoadingIndicator() {
-        progressBar.setVisibility(View.VISIBLE);
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoadingIndicator() {
-        progressBar.setVisibility(View.INVISIBLE);
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showContentNotFound() {
+        contentNotFound.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideContentNotFound() {
+        contentNotFound.setVisibility(View.GONE);
     }
     //MVP
 }

@@ -58,6 +58,7 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
 
     public void onSubmitBtnClicked(){
         getViewState().showProgress();
+        Log.d("USERID", " " + userID);
         Disposable d = dataApiHelper.setProfile(token, userID,profile)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

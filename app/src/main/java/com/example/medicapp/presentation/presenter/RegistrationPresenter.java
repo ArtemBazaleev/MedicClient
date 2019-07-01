@@ -51,6 +51,16 @@ public class RegistrationPresenter extends MvpPresenter<IRegistrationView> imple
             getViewState().showToastyMessage("Пароли не совпадают");
             return;
         }
+        if (login.length() < 3) {
+            getViewState().showToastyMessage("Проверьте логин");
+            return;
+        }
+        if (isNumeric(login)){
+            if (login.charAt(0) != '+')
+                login = "+" + login;
+            if (login.charAt(1) == '8')
+                login = "+7" + login.substring(2);
+        }
         getViewState().setEnabledSubmitBtn(false);
         getViewState().showLoadingIndicator();
         Disposable  d = helper.signUp(login, password)
@@ -63,6 +73,15 @@ public class RegistrationPresenter extends MvpPresenter<IRegistrationView> imple
                     getViewState().showToastyMessage("Error, try later");
                 });
         disposables.add(d);
+    }
+
+    private boolean isNumeric(String login) {
+        try {
+            Double.parseDouble(login);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 
     private void onSuccess(Response<ResponseSignIn> responseSignInResponse) {

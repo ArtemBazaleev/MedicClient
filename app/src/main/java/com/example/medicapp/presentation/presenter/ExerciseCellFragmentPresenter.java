@@ -13,6 +13,8 @@ import com.example.medicapp.ui.ExerciseCellFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,19 +61,40 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(responseBodyResponse -> {
-                        if (responseBodyResponse.isSuccessful())
-                            Log.d("Exercice", "mode: Suggested" + responseBodyResponse.body().string());
-                        else Log.d("Exercise", "onError: " + responseBodyResponse.errorBody().string());
+                        getViewState().hideLoadingIndicator();
+                        if (responseBodyResponse.isSuccessful()){
+                            Log.d("Exercice", "mode: Suggested");
+                            List<ExerciseModel> models = new ArrayList<>();
+                            HashSet<String> category = new HashSet<>();
+                            for (Exercise i: Objects.requireNonNull(responseBodyResponse.body()).getData().getExercises()) {
+                                models.add(new ExerciseModel(i));
+                                category.add(i.getCategory());
+                            }
+                            if (models.size() == 0)
+                                getViewState().showContentNotFound();
+                            else
+                                getViewState().hideContentNotFound();
+
+                            List<ExerciseModel> result = new LinkedList<>();
+
+                            for (String i: category) {
+                                ExerciseModel header = new ExerciseModel();
+                                header.setType(ExerciseModel.TYPE_HEADER);
+                                header.setCategory(i);
+                                result.add(header);
+                                for (ExerciseModel j: models) {
+                                    if (j.getCategory().equals(i))
+                                        result.add(j);
+                                }
+                            }
+                            getViewState().loadExerciseModels(result);
+                        }
+                        else Log.d("Exercise", "onError:" + responseBodyResponse.errorBody().string());
                     }, throwable -> {
                         throwable.printStackTrace();
                         getViewState().hideLoadingIndicator();
                         getViewState().showToastyMessage("Error, try later");
                     }));
-
-            List<ExerciseModel> models = new ArrayList<>();
-            for (int i = 0; i < 10; i++)
-                models.add(new ExerciseModel());
-            getViewState().loadExerciseModels(models);
         }
     }
 
@@ -80,10 +103,27 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
         if (responseBodyResponse.isSuccessful()) {
             Log.d("Exercise", "mode: All");
             List<ExerciseModel> models = new ArrayList<>();
-            for (Exercise i: Objects.requireNonNull(responseBodyResponse.body()).getData().getExercises()){
+            HashSet<String> category = new HashSet<>();
+            for (Exercise i: Objects.requireNonNull(responseBodyResponse.body()).getData().getExercises()) {
                 models.add(new ExerciseModel(i));
+                category.add(i.getCategory());
             }
-            getViewState().loadExerciseModels(models);
+            if (models.size() == 0)
+                getViewState().showContentNotFound();
+            else  getViewState().hideContentNotFound();
+            List<ExerciseModel> result = new LinkedList<>();
+
+            for (String i: category) {
+                ExerciseModel header = new ExerciseModel();
+                header.setType(ExerciseModel.TYPE_HEADER);
+                header.setCategory(i);
+                result.add(header);
+                for (ExerciseModel j: models) {
+                    if (j.getCategory().equals(i))
+                        result.add(j);
+                }
+            }
+            getViewState().loadExerciseModels(result);
         }
         else {
             try {
@@ -106,5 +146,9 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
 
     public void setMode(int mMode) {
         this.mode = mMode;
+    }
+
+    public void onRefresh() {
+        provideData();
     }
 }

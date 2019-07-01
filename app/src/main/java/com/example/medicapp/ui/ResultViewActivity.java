@@ -2,13 +2,17 @@ package com.example.medicapp.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +27,11 @@ import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.GlideImageViewFactory;
 import com.github.piasy.biv.view.ImageSaveCallback;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,8 +110,44 @@ public class ResultViewActivity extends AppCompatActivity {
 
     @BindView(R.id.bigImage) BigImageView bigImageView;
     @BindView(R.id.save) Button saveBtn;
+    @BindView(R.id.share_btn) Button shareBtn;
     private String photoUrl;
     public static final String IMAGE_PARAM = "IMAGE_PARAMS";
+
+    private ImageSaveCallback callbackSave = new ImageSaveCallback() {
+        @Override
+        public void onSuccess(String uri) {
+            Toast.makeText(ResultViewActivity.this,
+                    "Добавлено в галерею",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFail(Throwable t) {
+            t.printStackTrace();
+            Toast.makeText(ResultViewActivity.this,
+                    "Fail",
+                    Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private ImageSaveCallback callbackShare = new ImageSaveCallback() {
+        @Override
+        public void onSuccess(String uri) {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/jpeg");
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri));
+            startActivity(Intent.createChooser(share, "Share Image"));
+        }
+
+        @Override
+        public void onFail(Throwable t) {
+            t.printStackTrace();
+            Toast.makeText(ResultViewActivity.this,
+                    "Fail",
+                    Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,23 +176,19 @@ public class ResultViewActivity extends AppCompatActivity {
             }
             bigImageView.saveImageIntoGallery();
         });
-        bigImageView.setImageViewFactory(new GlideImageViewFactory());
-        bigImageView.setImageSaveCallback(new ImageSaveCallback() {
-            @Override
-            public void onSuccess(String uri) {
-                Toast.makeText(ResultViewActivity.this,
-                        "Success",
-                        Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onFail(Throwable t) {
-                t.printStackTrace();
-                Toast.makeText(ResultViewActivity.this,
-                        "Fail",
-                        Toast.LENGTH_SHORT).show();
+        shareBtn.setOnClickListener(l->{
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return;
             }
+            bigImageView.setImageSaveCallback(callbackShare);
+            bigImageView.saveImageIntoGallery();
+            bigImageView.setImageSaveCallback(callbackSave);
         });
+
+        bigImageView.setImageViewFactory(new GlideImageViewFactory());
+        bigImageView.setImageSaveCallback(callbackSave);
         Button b = findViewById(R.id.dummy_button);
         b.setOnClickListener(l-> finish());
 

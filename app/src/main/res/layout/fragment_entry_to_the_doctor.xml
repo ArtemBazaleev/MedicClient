@@ -1,283 +1,335 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
     tools:context=".ui.EntryToTheDoctorFragment">
 
-    <android.support.constraint.ConstraintLayout
+
+    <ProgressBar
+        android:id="@+id/progressBar4"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/shape_card_left"
-            android:elevation="6dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline9"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.35" />
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.65" />
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.79" />
-
-            <EditText
-                android:id="@+id/login"
-                android:layout_width="0dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="10dp"
-                android:background="@null"
-                android:ems="10"
-                android:hint="@string/family"
-                android:maxLength="25"
-                android:maxLines="1"
-                android:fontFamily="@font/sf_compact_rounded_medium"
-                android:inputType="textPersonName"
-                android:paddingStart="24dp"
-                android:paddingEnd="0dp"
-                android:textSize="22sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.8" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="#1A000000"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline6" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="#1A000000"
-                app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/confirm_password_txt"
-                android:layout_width="0dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="15dp"
-                android:background="@null"
-                android:ems="10"
-                android:hint="Отчество"
-                android:paddingStart="24dp"
-                android:fontFamily="@font/sf_compact_rounded_medium"
-                android:paddingEnd="0dp"
-                android:maxLines="1"
-                android:maxLength="25"
-                android:textSize="22sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline5"
-                app:layout_constraintVertical_bias="0.20999998" />
-
-            <EditText
-                android:id="@+id/editText3"
-                android:layout_width="0dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@null"
-                android:ems="10"
-                android:maxLines="1"
-                android:maxLength="25"
-                android:hint="Имя"
-                android:fontFamily="@font/sf_compact_rounded_medium"
-                android:paddingStart="24dp"
-                android:paddingEnd="0dp"
-                android:textSize="22sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline6" />
-
-        </android.support.constraint.ConstraintLayout>
-
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/sf_compact_rounded_bold"
-            android:text="Запись"
-            android:textAlignment="center"
-            android:textColor="@color/default_selected_day_background_start_color"
-            android:textSize="@dimen/header_txt_size"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayout2"
-            android:layout_width="0dp"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/shape_card_right"
-            android:elevation="6dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline8"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2" />
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@null"
-                android:gravity="end|center"
-                android:paddingEnd="24dp"
-                android:ems="10"
-                android:hint="E-Mail или Телефон"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <Button
+                android:id="@+id/reservations"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_assignment_black_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline10"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </android.support.constraint.ConstraintLayout>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/shape_card_left"
+                android:elevation="6dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline9"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
 
 
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.35" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.1" />
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.65" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.9" />
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.79" />
 
-        <Button
-            android:id="@+id/chose_date_btn_entry"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:fontFamily="@font/sf_compact_rounded_medium"
-            android:elevation="6dp"
-            android:stateListAnimator="@null"
-            android:text="Выбрать дату"
-            android:background="@drawable/round_white_bg_rippled"
-            app:layout_constraintEnd_toStartOf="@+id/guideline9"
-            app:layout_constraintStart_toStartOf="@+id/guideline8"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                <EditText
+                    android:id="@+id/login"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:fontFamily="@font/sf_compact_rounded_medium"
+                    android:hint="@string/family"
+                    android:inputType="textPersonName"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="0dp"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline6"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.8" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#1A000000"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/guideline6" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#1A000000"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <EditText
+                    android:id="@+id/confirm_password_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:fontFamily="@font/sf_compact_rounded_medium"
+                    android:hint="Отчество"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="0dp"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/guideline5"
+                    app:layout_constraintVertical_bias="0.20999998" />
+
+                <EditText
+                    android:id="@+id/editText3"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:fontFamily="@font/sf_compact_rounded_medium"
+                    android:hint="Имя"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="0dp"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/guideline6" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/sf_compact_rounded_bold"
+                android:text="Запись"
+                android:textAlignment="center"
+                android:textColor="@color/default_selected_day_background_start_color"
+                android:textSize="@dimen/header_txt_size"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_card_right"
+                android:elevation="6dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline8"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.2" />
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:gravity="end|center"
+                    android:hint="E-Mail или Телефон"
+                    android:paddingEnd="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline10"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.9" />
+
+            <Button
+                android:id="@+id/chose_date_btn_entry"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/round_white_bg_rippled"
+                android:clickable="true"
+                android:elevation="6dp"
+                android:focusable="true"
+                android:fontFamily="@font/sf_compact_rounded_medium"
+                android:stateListAnimator="@null"
+                android:text="Выбрать дату"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline9"
+                app:layout_constraintStart_toStartOf="@+id/guideline8"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
                 <!--<TextView-->
-                    <!--android:id="@+id/textView4"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="8dp"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:layout_marginEnd="8dp"-->
-                    <!--android:layout_marginBottom="10dp"-->
-                    <!--android:text="Выбрать дату"-->
-                    <!--android:textAlignment="center"-->
-                    <!--android:textColor="@android:color/background_dark"-->
-                    <!--android:textSize="18sp"-->
-                    <!--android:textStyle="bold"-->
-                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                    <!--app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--app:layout_constraintStart_toStartOf="parent"-->
-                    <!--app:layout_constraintTop_toTopOf="parent" />-->
-        </Button>
+                <!--android:id="@+id/textView4"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="8dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginEnd="8dp"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:text="Выбрать дату"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@android:color/background_dark"-->
+                <!--android:textSize="18sp"-->
+                <!--android:textStyle="bold"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+            </Button>
 
 
-        <Button
-            android:id="@+id/submit_btn_entry"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:enabled="false"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="9dp"
-            android:background="@drawable/shape_round_gradient_btn"
-            android:text="Записаться"
-            android:fontFamily="@font/sf_compact_rounded_light"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView_empty_date"
-            app:layout_constraintVertical_bias="1.0" />
+            <Button
+                android:id="@+id/submit_btn_entry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="9dp"
+                android:background="@drawable/shape_round_gradient_btn"
+                android:enabled="false"
+                android:fontFamily="@font/sf_compact_rounded_light"
+                android:text="Записаться"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView_empty_date"
+                app:layout_constraintVertical_bias="1.0" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="20dp" />
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="20dp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView_empty_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chose_date_btn_entry" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_empty_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/sf_compact_rounded_bold"
+                android:text="свободное время"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/chose_date_btn_entry"
+                app:layout_constraintStart_toStartOf="@+id/chose_date_btn_entry"
+                app:layout_constraintTop_toBottomOf="@+id/chose_date_btn_entry" />
+
+            <ProgressBar
+                android:id="@+id/progressBar5"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/textView14"
+                app:layout_constraintStart_toStartOf="@+id/textView14"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView_empty_date" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 
-</android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

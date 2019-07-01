@@ -2,13 +2,17 @@ package com.example.medicapp.ui;
 
 
 import android.net.Uri;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.example.medicapp.R;
 import com.example.medicapp.networking.response.exercise.Video;
+import com.halilibo.bettervideoplayer.BetterVideoCallback;
 import com.halilibo.bettervideoplayer.BetterVideoPlayer;
 
 import butterknife.BindView;
@@ -17,6 +21,8 @@ import butterknife.ButterKnife;
 public class VideoViewActivity extends AppCompatActivity {
 
     @BindView(R.id.player) BetterVideoPlayer player;
+    @BindView(R.id.rootVideoView)
+    ConstraintLayout root;
     public static final String VIDEO =  "VIDEO_URL";
 
     @Override
@@ -28,18 +34,73 @@ public class VideoViewActivity extends AppCompatActivity {
             player.setSource(Uri.parse(getIntent().getExtras().getString(VIDEO)));
         else player.setSource(Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
         player.enableSwipeGestures();
-        player.setOnClickListener(l-> hideSystemUI());
+        root.setOnClickListener(l->{
+            if (player.isControlsShown())
+            {
+                hideSystemUI();
+                player.hideControls();
+            }
+            else {
+                player.showControls();
+                hideSystemUI();
+            }
+        });
+        player.setCallback(new BetterVideoCallback() {
+            @Override
+            public void onStarted(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onPaused(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onPreparing(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onPrepared(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onBuffering(int percent) {
+
+            }
+
+            @Override
+            public void onError(BetterVideoPlayer player, Exception e) {
+                Toast.makeText(VideoViewActivity.this,"Error, try later", Toast.LENGTH_SHORT).show();
+                VideoViewActivity.this.finish();
+            }
+
+            @Override
+            public void onCompletion(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onToggleControls(BetterVideoPlayer player, boolean isShowing) {
+
+            }
+        });
+        player.getToolbar().setOnClickListener(l-> hideSystemUI());
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        Log.d("onWindowFocusChanged: ", String.valueOf(hasFocus));
         if (hasFocus) {
             hideSystemUI();
         }
     }
 
     private void hideSystemUI() {
+        Log.d( "hideSystemUI: ", "called");
         // Enables regular immersive mode.
         // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
         // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY

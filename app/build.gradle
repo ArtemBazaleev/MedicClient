@@ -65,7 +65,6 @@ dependencies {
 
     implementation 'online.devliving:securedpreferencestore:0.7.3'
 
-
     //rx + retrofit
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
@@ -73,6 +72,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+
+    //
+    implementation 'com.github.appunite:video-player-android:1.2.0'
+
+    // or use specific version
+    implementation 'com.github.appunite:video-player-android:1.2.0'
 
 
     implementation 'com.android.support:design:28.0.0'

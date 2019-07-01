@@ -61,6 +61,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         ImageView imageView;
         CardView cardView;
         TextView textView;
+        TextView header;
         ExerciseModel exerciseModel;
 
         ExerciseHolder(@NonNull View itemView) {
@@ -69,11 +70,19 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
             cardView = itemView.findViewById(R.id.cardView);
             cardView.setOnClickListener(this);
             textView = itemView.findViewById(R.id.exercise_desc);
+            header = itemView.findViewById(R.id.categoryExercise);
         }
 
 
         void onBind(ExerciseModel model){
             exerciseModel = model;
+            if (model.getType() == ExerciseModel.TYPE_HEADER) {
+                cardView.setVisibility(View.GONE);
+                textView.setVisibility(View.GONE);
+                header.setVisibility(View.VISIBLE);
+                header.setText(model.getCategory());
+                return;
+            }
             Picasso.with(mContext)
                     .load(model.getUrlImage())
                     .error(R.drawable.ic_close_gray)
@@ -84,7 +93,9 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
         @Override
         public void onClick(View v) {
-            clickedListener.onVideoClicked(exerciseModel);
+            if (clickedListener != null && exerciseModel.getType() != ExerciseModel.TYPE_HEADER) {
+                clickedListener.onVideoClicked(exerciseModel);
+            }
         }
     }
 

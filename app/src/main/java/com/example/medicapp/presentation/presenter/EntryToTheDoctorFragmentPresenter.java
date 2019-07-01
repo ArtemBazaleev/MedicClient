@@ -6,8 +6,10 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.model.EmptyDateModel;
+import com.example.medicapp.model.ReservationModel;
 import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.networking.response.date.Time;
+import com.example.medicapp.networking.response.reservations.Reservation;
 import com.example.medicapp.presentation.view.IEntryToTheDoctorFragmentView;
 
 import org.json.JSONObject;
@@ -74,24 +76,31 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
             getViewState().showToastyMessage("Введите фамилию");
             return;
         }
-
+        if (chosenTime.equals("") || chosenDate.equals("")) {
+            getViewState().showToastyMessage("Необходимо выбрать время и дату");
+            return;
+        }
+        getViewState().showProgress();
         Disposable d = dataApiHelper.reserveData(token, id, chosenDate, chosenTime, name, family)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
+                    getViewState().hideProgress();
                     if (responseBodyResponse.isSuccessful()) {
                         String response = Objects.requireNonNull(responseBodyResponse.body()).string();
                         Log.d("Presenter", "onSubmitBtnClicked: " + response);
-                        getViewState().showAlertDialog(String.valueOf(responseBodyResponse.code()), response);
+                        getViewState().showAlertDialog("Запись прошла успешно", "Вы записаны на:" + chosenDate + " Время:" + chosenTime);
                     }
                     else {
                         String response = Objects.requireNonNull(responseBodyResponse.errorBody()).string();
                         Log.d("Presenter", "onSubmitBtnClicked: " + response);
-                        getViewState().showAlertDialog(String.valueOf(responseBodyResponse.code()), response);
+                        JSONObject jsonObject = new JSONObject(response);
+                        getViewState().showAlertDialog("Ошибка записи", jsonObject.getString("message"));
                     }
                 }, throwable -> {
                     throwable.printStackTrace();
                     getViewState().showToastyMessage("Error, try later");
+                    getViewState().hideProgress();
                 });
     }
 
@@ -104,6 +113,8 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
         getViewState().setDateText(s);
         this.chosenDate = s;
         List<EmptyDateModel> models = new ArrayList<>();
+
+        getViewState().showProgressTime();
         Disposable d = dataApiHelper.getAvailableDatesForDay(token, id, s, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,11 +122,44 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
                 .filter(time -> !time.getReserved())
                 .toList()
                 .subscribe(response -> {
+                    getViewState().hideProgressTime();
                     for (Time i :response) {
                         models.add(new EmptyDateModel(i.getTime()));
                     }
                     getViewState().loadAvailableDate(models);
-                },throwable -> getViewState().showToastyMessage("Error, try later"));
+                },throwable ->{
+                    getViewState().showToastyMessage("Error, try later");
+                    getViewState().hideProgressTime();
+                });
         getViewState().hideDatePickerDialog();
+    }
+
+    public void onViewCreated() {
+
+    }
+
+    public void onReservationClicked() {
+        getViewState().showProgress();
+        Disposable d = dataApiHelper.getReservations(token, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    getViewState().hideProgress();
+                    if (responseBodyResponse.isSuccessful()){
+                        Log.d("onViewCreated: ", "OK");
+                        ArrayList<ReservationModel> data = new ArrayList<>();
+                        for (Reservation i:responseBodyResponse.body().getData().getReservations()) {
+                            data.add(new ReservationModel(i.getDate(), i.getTime()));
+                        }
+                        getViewState().showAlertReservations(data);
+                    }else {
+                        Log.d("onViewCreated: ", "NEOK");
+                        getViewState().showToastyMessage("Error, try to relogin");
+                    }
+                },throwable -> {
+                    throwable.printStackTrace();
+                    getViewState().hideProgress();
+                    getViewState().showToastyMessage("Error, try later");
+                });
     }
 }

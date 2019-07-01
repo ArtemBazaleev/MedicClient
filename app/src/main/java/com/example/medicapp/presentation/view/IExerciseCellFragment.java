@@ -17,4 +17,8 @@ public interface IExerciseCellFragment extends MvpView {
     void showLoadingIndicator();
 
     void hideLoadingIndicator();
+
+    void showContentNotFound();
+
+    void hideContentNotFound();
 }

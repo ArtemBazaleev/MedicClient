@@ -3,6 +3,8 @@ package com.example.medicapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +33,8 @@ public class ResultsFragment extends MvpAppCompatFragment
         implements ResultsAdapter.IOnResultClicked, IResultsFragmentView {
 
     @BindView(R.id.recycler_results) RecyclerView recyclerView;
+    @BindView(R.id.not_found_content_results) ConstraintLayout noContent;
+    @BindView(R.id.results_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
 
     @InjectPresenter
@@ -49,6 +53,7 @@ public class ResultsFragment extends MvpAppCompatFragment
         View v = inflater.inflate(R.layout.fragment_results, container, false);
         ButterKnife.bind(this,v);
         presenter.onCreateView();
+        swipeRefreshLayout.setOnRefreshListener(()->presenter.onRefresh());
         return v;
     }
 
@@ -74,9 +79,37 @@ public class ResultsFragment extends MvpAppCompatFragment
 
     @Override
     public void startActivityResultView(ResultModel resultModel) {
-        Intent i = new Intent(getContext(), ResultViewActivity.class);
-        i.putExtra(ResultViewActivity.IMAGE_PARAM, resultModel.getUrl());
-        startActivity(i);
+        if (resultModel.getType() == ResultModel.TYPE_BACKBONE)
+        {
+            Intent i = new Intent(getContext(), BackBoneViewActivity.class);
+            i.putExtra(BackBoneViewActivity.BACKBONE_ARRAY, resultModel.getBackBoneImage());
+            startActivity(i);
+        }
+        else  {
+            Intent i = new Intent(getContext(), ResultViewActivity.class);
+            i.putExtra(ResultViewActivity.IMAGE_PARAM, resultModel.getUrl());
+            startActivity(i);
+        }
+    }
+
+    @Override
+    public void showErrorNoResults() {
+        noContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideErrorNoResults() {
+        noContent.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRefreshing() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideRefreshing() {
+        swipeRefreshLayout.setRefreshing(false);
     }
     //MVP
 }

@@ -5,7 +5,8 @@ import com.example.medicapp.networking.data.ProfileBody;
 import com.example.medicapp.networking.data.ReservationBody;
 import com.example.medicapp.networking.response.date.ResponseAvailableDate;
 import com.example.medicapp.networking.response.exercise.ResponseExercise;
-import com.example.medicapp.networking.response.results.ResponseResults;
+import com.example.medicapp.networking.response.reservations.ResponseReservations;
+import com.example.medicapp.networking.response.results.ResponseResult;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -23,7 +24,7 @@ public interface DataApi {
     Observable<Response<ResponseExercise>> getExercise(@Header("Cookie") String tokenAndId);
 
     @GET("patient/{patientID}/exercise")
-    Observable<Response<ResponseBody>> getSuggestedExercises(
+    Observable<Response<ResponseExercise>> getSuggestedExercises(
             @Header("Cookie") String tokenAndId,
             @Path("patientID") String patientID
     );
@@ -42,7 +43,7 @@ public interface DataApi {
     );
 
     @GET("patient/{patientID}/diagnosticInfo")
-    Observable<Response<ResponseResults>> getDiagnostics(
+    Observable<Response<ResponseBody>> getDiagnostics(
             @Header("Cookie") String tokenAndId,
             @Path("patientID") String userID
     );
@@ -59,5 +60,11 @@ public interface DataApi {
             @Header("Cookie") String tokenAndId,
             @Path("patientID") String userID,
             @Body ReservationBody body
+    );
+
+    @GET("patient/{patientID}/reservation")
+    Observable<Response<ResponseReservations>> getReservedDates(
+            @Header("Cookie") String tokenAndId,
+            @Path("patientID") String userID
     );
 }

@@ -7,13 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.medicapp.App;
 import com.example.medicapp.model.BaseMessage;
 import com.example.medicapp.R;
 import com.example.medicapp.adapters.MessageListAdapter;
@@ -51,24 +54,15 @@ public class ChatActivity extends AppCompatActivity
     private static final int GALLERY_REQUEST_CODE = 65535;
 
     private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("https://socket-io-chat.now.sh/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
+    private App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        mSocket.connect();
-        mSocket.on(Socket.EVENT_CONNECT, onConnect);
-        mSocket.on("new message", onNewMessage);
-        mSocket.on("user joined", onUserJoined);
-        //mSocket.connect();
+        app = (App)getApplication();
+        initSocket();
         hideAll();
         LinearLayoutManager manager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
@@ -84,11 +78,18 @@ public class ChatActivity extends AppCompatActivity
         imageButton.setOnClickListener(l->{
             hideAll();
             BaseMessage baseMessage = new BaseMessage(text.getText().toString());
-            String message = text.getText().toString();
-            mSocket.emit("new message", message);
-            text.setText("");
+            baseMessage.setMessage(text.getText().toString());
+            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_SENDER;
+            JSONObject message = new JSONObject();
+            try {
+                message.put("message", text.getText().toString());
+                Log.d("",message.toString());
+                mSocket.emit("message", message);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             adapter.addMessage(baseMessage);
-            recyclerView.scrollToPosition(adapter.getItemCount()-1);
+
         });
 
         addBtn.setOnClickListener(l->{
@@ -98,6 +99,35 @@ public class ChatActivity extends AppCompatActivity
             intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
             startActivityForResult(intent, GALLERY_REQUEST_CODE);
         });
+    }
+
+    private void initSocket() {
+        mSocket = app.getmSocket();
+        if (mSocket.connected())
+            Toast.makeText(this, "Connected!!", Toast.LENGTH_SHORT).show();
+        else mSocket.connect();
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("userId", app.getmUserID());
+            data.put("token", app.getmToken());
+            //Log.d("", data.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectedError);
+        mSocket.on(Socket.EVENT_CONNECT, onConnected);
+        mSocket.emit("auth", data);
+        mSocket.on("authOk", authOk);
+        mSocket.on("enteredDialog",enteredDialog);
+        mSocket.on("messageReceive",messageReceive);
+        mSocket.on("leavedDialog",leavedDialog);
+        mSocket.on("newMessage",newMessage);
+        mSocket.on("messageListReceive", messageListReceive);
+        mSocket.on("error-pipe", error_pipe);
+        Log.d("", "initSocket: " + data.toString());
+        mSocket.emit("auth", data);
+
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data){
@@ -144,58 +174,15 @@ public class ChatActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mSocket.disconnect();
-
-        mSocket.off(Socket.EVENT_CONNECT, onConnect);
-        mSocket.off("new message", onNewMessage);
-        mSocket.off("user joined", onUserJoined);
+        mSocket.off("authOk", authOk);
+        mSocket.off("enteredDialog",enteredDialog);
+        mSocket.off("messageReceive",messageReceive);
+        mSocket.off("leavedDialog",leavedDialog);
+        mSocket.off("newMessage",newMessage);
+        mSocket.off("messageListReceive", messageListReceive);
+        mSocket.off("error-pipe", error_pipe);
     }
 
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            ChatActivity.this.runOnUiThread(() -> adapter.addMessage(new BaseMessage("connected")));
-            mSocket.emit("add user", "ArtemMobile");
-        }
-    };
-
-    private Emitter.Listener onNewMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            ChatActivity.this.runOnUiThread(() -> {
-                JSONObject data = (JSONObject) args[0];
-                String username;
-                String message;
-                try {
-                    username = data.getString("username");
-                    message = data.getString("message");
-                } catch (JSONException e) {
-                    return;
-                }
-                BaseMessage baseMessage = new BaseMessage(message);
-                baseMessage.setFrom(username);
-                baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-                adapter.addMessage(baseMessage);
-                recyclerView.scrollToPosition(adapter.getItemCount()-1);
-            });
-        }
-    };
-
-    private Emitter.Listener onUserJoined = args -> ChatActivity.this.runOnUiThread(() -> {
-        JSONObject data = (JSONObject) args[0];
-        String username;
-        int numUsers;
-        try {
-            username = data.getString("username");
-            numUsers = data.getInt("numUsers");
-        } catch (JSONException e) {
-            return;
-        }
-        BaseMessage baseMessage = new BaseMessage("user joined!");
-        baseMessage.setFrom(username);
-        baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-        adapter.addMessage(baseMessage);
-        recyclerView.scrollToPosition(adapter.getItemCount()-1);
-    });
 
     @Override
     public void onReceivedImage(BaseMessage baseMessage) {
@@ -203,4 +190,82 @@ public class ChatActivity extends AppCompatActivity
         i.putExtra(ResultViewActivity.IMAGE_PARAM, baseMessage.getUri().toString());
         startActivity(i);
     }
+
+
+    //events
+
+    private Emitter.Listener error_pipe  = args -> ChatActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d("error_pipe", data.toString());
+    });
+
+    private Emitter.Listener messageListReceive = args -> ChatActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d("", data.toString());
+    });
+
+    private Emitter.Listener newMessage = args -> ChatActivity.this.runOnUiThread(() -> {
+        try {
+            JSONObject data = (JSONObject) args[0];
+            BaseMessage baseMessage = new BaseMessage();
+            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
+            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
+            //baseMessage.setTime(data.getJSONObject("message").getLong("date"));
+            adapter.addMessage(baseMessage);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    });
+
+    private Emitter.Listener leavedDialog = args -> ChatActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d("leavedDialog", data.toString());
+    });
+
+    private Emitter.Listener messageReceive  = args -> ChatActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d("messageReceive", data.toString());
+    });
+
+    private Emitter.Listener enteredDialog = args -> ChatActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d("enteredDialog", data.toString());
+    });
+
+    private Emitter.Listener authOk = args -> ChatActivity.this.runOnUiThread(() -> {
+        try {
+            JSONObject data = (JSONObject) args[0];
+            Log.d( "AuthOk: ", data.toString());
+            for (int i = 0; i <data.getJSONArray("dialogs").length() ; i++) {
+                for (int j = 0; j <data.getJSONArray("dialogs").getJSONObject(i).getJSONArray("participants").length() ; j++) {
+                    JSONObject participant = data.getJSONArray("dialogs").getJSONObject(i).getJSONArray("participants").getJSONObject(j);
+                    String id  = participant.getString("id");
+                    //Log.d("", id);
+//                    if (id.equals(patientID)){
+//                        JSONObject emitObj = new JSONObject();
+//                        emitObj.put("dialogId",data.getJSONArray("dialogs").getJSONObject(i).getString("id"));
+//                        mSocket.emit("enterInDialog", emitObj);
+//                        Log.d("", emitObj.toString());
+//                        break;
+//                    }
+                }
+
+            }
+            Log.d("", data.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    });
+
+    private Emitter.Listener onConnected = args -> ChatActivity.this.runOnUiThread(() -> {
+        //JSONObject data = (JSONObject) args[0];
+        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+
+    });
+
+    private Emitter.Listener onConnectedError = args -> ChatActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+
+    });
 }

@@ -52,12 +52,14 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
         private ResultModel model;
         private TextView date;
         private TextView conclusion;
+        private TextView desc;
 
         public ResultHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.constraintLayout5);
             date = itemView.findViewById(R.id.textView8);
             conclusion = itemView.findViewById(R.id.text_conclusion);
+            desc = itemView.findViewById(R.id.textView9);
             constraintLayout.setOnClickListener(this);
         }
 
@@ -70,12 +72,12 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
             this.model = model;
             if (model.getType() == ResultModel.TYPE_CONCLUSION){
                 constraintLayout.setVisibility(View.GONE);
-                //date.setVisibility(View.GONE);
                 date.setText(model.getCreated());
                 conclusion.setText(model.getDesc());
                 conclusion.setVisibility(View.VISIBLE);
             }
             else {
+                desc.setText(model.getDesc());
                 date.setText(model.getCreated());
             }
         }

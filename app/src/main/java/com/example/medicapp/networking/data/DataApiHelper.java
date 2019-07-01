@@ -5,7 +5,8 @@ import com.example.medicapp.model.ProfileModel;
 import com.example.medicapp.networking.DataApi;
 import com.example.medicapp.networking.response.date.ResponseAvailableDate;
 import com.example.medicapp.networking.response.exercise.ResponseExercise;
-import com.example.medicapp.networking.response.results.ResponseResults;
+import com.example.medicapp.networking.response.reservations.ResponseReservations;
+import com.example.medicapp.networking.response.results.ResponseResult;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,7 @@ public class DataApiHelper {
         return api.getExercise(idAndToken);
     }
 
-    public Observable<Response<ResponseBody>> getSuggestedExercisec(String token, String id){
+    public Observable<Response<ResponseExercise>> getSuggestedExercisec(String token, String id){
         String idAndToken  = "token=" + token + "; " + "id=" + id;
         Retrofit retrofit = provideRetrofit();
         DataApi api = retrofit.create(DataApi.class);
@@ -92,10 +93,18 @@ public class DataApiHelper {
         return api.reserveData(idAndToken, id, new ReservationBody(date, time, name, surname));
     }
 
-    public Observable<Response<ResponseResults>> getDiagnosticInfo(String token, String id){
+    public Observable<Response<ResponseBody>> getDiagnosticInfo(String token, String id){
         Retrofit retrofit = provideRetrofit();
         String idAndToken = "token=" + token + "; " + "id=" + id;
         DataApi api= retrofit.create(DataApi.class);
         return api.getDiagnostics(idAndToken, id);
     }
+
+    public Observable<Response<ResponseReservations>> getReservations(String token, String id){
+        Retrofit retrofit = provideRetrofit();
+        String idAndToken = "token=" + token + "; " + "id=" + id;
+        DataApi api= retrofit.create(DataApi.class);
+        return api.getReservedDates(idAndToken, id);
+    }
+
 }

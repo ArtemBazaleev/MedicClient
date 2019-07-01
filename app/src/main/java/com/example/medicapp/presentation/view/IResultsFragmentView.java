@@ -13,4 +13,11 @@ public interface IResultsFragmentView extends MvpView {
 
     void startActivityResultView(ResultModel model);
 
+    void showErrorNoResults();
+
+    void hideErrorNoResults();
+
+    void showRefreshing();
+
+    void hideRefreshing();
 }

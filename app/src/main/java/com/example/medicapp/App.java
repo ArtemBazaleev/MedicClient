@@ -2,6 +2,7 @@ package com.example.medicapp;
 
 import android.app.Application;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -21,10 +22,14 @@ public class App extends Application implements ITimerSms {
     @Override
     public void onCreate() {
         super.onCreate();
-        try{
-            mSocket = IO.socket(Constants.SOCKET_IO);
-        }catch (URISyntaxException e){
-            e.printStackTrace();
+        try {
+            IO.Options mOptions = new IO.Options();
+            mOptions.path = "/socstream/";
+            mOptions.secure = false;
+            Log.d("test", "initSocket: " + mOptions.toString());
+            mSocket = IO.socket(Constants.BASE_SOCKET_URL, mOptions);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 

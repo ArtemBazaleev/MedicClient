@@ -1,8 +1,11 @@
 package com.example.medicapp.ui;
 
-import android.content.DialogInterface;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView;
@@ -20,12 +24,15 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.medicapp.App;
+import com.example.medicapp.adapters.ReservationAdapter;
 import com.example.medicapp.model.EmptyDateModel;
 import com.example.medicapp.R;
 import com.example.medicapp.adapters.EmptyDateAdapter;
+import com.example.medicapp.model.ReservationModel;
 import com.example.medicapp.presentation.presenter.EntryToTheDoctorFragmentPresenter;
 import com.example.medicapp.presentation.view.IEntryToTheDoctorFragmentView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -39,11 +46,12 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
 
     @InjectPresenter
     EntryToTheDoctorFragmentPresenter presenter;
+    private android.app.AlertDialog dialogReservation;
 
     @ProvidePresenter
-    EntryToTheDoctorFragmentPresenter providePresemter(){
+    EntryToTheDoctorFragmentPresenter providePresenter(){
         App app  = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
-        return  new EntryToTheDoctorFragmentPresenter(app.getmToken(), app.getmUserID());
+        return new EntryToTheDoctorFragmentPresenter(app.getmToken(), app.getmUserID());
     }
 
     @BindView(R.id.chose_date_btn_entry) Button choseDate;
@@ -51,7 +59,11 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     @BindView(R.id.submit_btn_entry) Button submitBtn;
     @BindView(R.id.editText3) EditText nameTxt;
     @BindView(R.id.login) EditText family;
-
+    @BindView(R.id.reservations) Button reservationsBtn;
+    @BindView(R.id.progressBar4)
+    ProgressBar progressBar;
+    @BindView(R.id.progressBar5)
+    ProgressBar progressBarTime;
     private boolean isShownDialog = false;
 
     private AlertDialog alertDialog;
@@ -70,6 +82,7 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
         recyclerView.setVisibility(View.GONE);
         choseDate.setOnClickListener(l->presenter.onChoseDateClicked());
         submitBtn.setOnClickListener(l-> presenter.onSubmitBtnClicked());
+        reservationsBtn.setOnClickListener(l -> presenter.onReservationClicked());
         nameTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -136,6 +149,42 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     }
 
     @Override
+    public void showAlertReservations(ArrayList<ReservationModel> data) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        View v = getLayoutInflater().inflate(R.layout.reservations_dialog,null);
+        RecyclerView recyclerView = v.findViewById(R.id.recycler_reservations);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ReservationAdapter adapter = new ReservationAdapter(getContext(), data);
+        recyclerView.setAdapter(adapter);
+        Button b = v.findViewById(R.id.button_dialog_ok);
+        b.setOnClickListener(l-> dialogReservation.dismiss());
+        builder.setView(v);
+        dialogReservation = builder.create();
+        Objects.requireNonNull(dialogReservation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogReservation.show();
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgressTime() {
+        progressBarTime.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressTime() {
+        progressBarTime.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showDatePickerDialog() {
         if (isShownDialog)
             return;
@@ -171,13 +220,23 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        alertDialog.dismiss();
-        dialog.dismiss();
+        if (alertDialog!= null)
+            alertDialog.dismiss();
+        if (dialog!= null)
+            dialog.dismiss();
+        if (dialogReservation!=null)
+            dialogReservation.dismiss();
     }
 
     //MVP
     @Override
     public void onItemClicked(EmptyDateModel model) {
         presenter.setTime(model.getTime()); //FAKE DATA
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.onViewCreated();
     }
 }

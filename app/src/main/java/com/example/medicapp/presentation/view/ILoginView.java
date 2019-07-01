@@ -17,4 +17,7 @@ public interface ILoginView extends MvpView {
     void showSmsFieldDialog();
 
     void updateDialogModeEnterPassword();
+
+    void showProgressDialog();
+    void hideProgressDialog();
 }

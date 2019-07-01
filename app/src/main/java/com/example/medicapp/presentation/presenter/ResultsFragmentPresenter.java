@@ -7,8 +7,10 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.Constants;
 import com.example.medicapp.model.ResultModel;
 import com.example.medicapp.networking.data.DataApiHelper;
-import com.example.medicapp.networking.response.results.Info;
 import com.example.medicapp.presentation.view.IResultsFragmentView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +32,7 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
     private String mUserID = "";
     private List<ResultModel> data;
     private String TAG = "Results";
+    DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public ResultsFragmentPresenter(String token, String id) {
         this.mToken = token;
@@ -37,33 +40,7 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
     }
 
     public void onCreateView(){
-        data = new ArrayList<>();
-        Disposable d =  apiHelper.getDiagnosticInfo(mToken, mUserID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseBodyResponse -> {
-                    Log.d(TAG, "onCreateView: " + responseBodyResponse.code());
-                    if (responseBodyResponse.isSuccessful())
-                    {
-                        Log.d(TAG, "onCreateView: "+ responseBodyResponse.body().toString());
-                        Info info = responseBodyResponse.body().getData().getInfo().get(0);
-                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                        Date date = new Date(info.getCreated());
-                        String today = formatter.format(date);
-                        data.add(new ResultModel("",info.getConclusion(),"Заключение:", ResultModel.TYPE_CONCLUSION));
-                        for (String i:info.getBackbone()) {
-                            data.add(new ResultModel(Constants.BASE_URL_IMAGE + i, info.getConclusion(), today, ResultModel.TYPE_BACKBONE));
-                        }
-                        for (String i:info.getOther()) {
-                            data.add(new ResultModel(Constants.BASE_URL_IMAGE + i, "", today, ResultModel.TYPE_OTHER));
-                        }
-                        getViewState().loadResults(data);
-                    }
-                    else{
-                        Log.d(TAG, "onCreateView: "  + responseBodyResponse.errorBody().string());
-                    }
-                },throwable -> getViewState().showTastyMessage("Error, try later"));
-
+        requestResults();
     }
 
     private List<ResultModel> provideData() {
@@ -77,4 +54,68 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
         getViewState().startActivityResultView(model);
     }
 
+    public void onRefresh() {
+        requestResults();
+    }
+
+    private void requestResults(){
+        data = new ArrayList<>();
+        getViewState().showRefreshing();
+        Disposable d =  apiHelper.getDiagnosticInfo(mToken, mUserID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    getViewState().hideRefreshing();
+                    Log.d(TAG, "onCreateView: " + responseBodyResponse.code());
+                    if (responseBodyResponse.isSuccessful())
+                    {
+                        JSONObject jsonObject = new JSONObject(responseBodyResponse.body().string());
+                        Log.d(TAG, jsonObject.toString());
+                        try {
+                            JSONArray infos = jsonObject.getJSONObject("data").getJSONArray("info");
+                            for (int i = 0; i< infos.length(); i++) {
+                                Date date = new Date(infos.getJSONObject(i).getLong("created"));
+                                String today = formatter.format(date);
+                                data.add(new ResultModel("",
+                                        infos.getJSONObject(i).getString("conclusion"),
+                                        "Заключение",
+                                        ResultModel.TYPE_CONCLUSION));
+                                JSONArray arrJson = infos.getJSONObject(i).getJSONArray("backbone");
+                                String[] arr = new String[arrJson.length()];
+                                for(int j = 0; j < arrJson.length(); j++)
+                                    arr[j] = arrJson.getString(j);
+                                ResultModel resultModel = new ResultModel(
+                                        "",
+                                        "3D модель позвоночника",
+                                        today,
+                                        ResultModel.TYPE_BACKBONE
+                                );
+                                resultModel.setBackBoneImage(arr);
+                                data.add(resultModel);
+
+                                JSONArray otherArr = infos.getJSONObject(i).getJSONArray("other");
+                                for (int k=0; k < otherArr.length(); k++){
+                                    data.add(new ResultModel(
+                                            Constants.BASE_URL_IMAGE + otherArr.getJSONObject(k).getString("image"),
+                                            otherArr.getJSONObject(k).getString("name"),
+                                            today,
+                                            ResultModel.TYPE_OTHER));
+                                }
+                            }
+                            if (data.size() == 0)
+                                getViewState().showErrorNoResults();
+                            getViewState().loadResults(data);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        Log.d(TAG, "onCreateView: "  + responseBodyResponse.errorBody().string());
+                    }
+                },throwable -> {
+                    getViewState().hideRefreshing();
+                    getViewState().showTastyMessage("Error, try later");
+                });
+
+    }
 }

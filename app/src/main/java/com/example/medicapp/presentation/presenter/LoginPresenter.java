@@ -55,6 +55,16 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
             getViewState().showToastyMessage("Заполните все поля");
             return;
         }
+        if (login.length() < 3) {
+            getViewState().showToastyMessage("Проверьте логин");
+            return;
+        }
+        if (isNumeric(login)){
+            if (login.charAt(0) != '+')
+                login = "+" + login;
+            if (login.charAt(1) == '8')
+                login = "+7" + login.substring(2);
+        }
         getViewState().setEnabledLoginBtn(false);
         getViewState().showLoadingIndicator();
         disposables.add(helper.signIn(login,password)
@@ -68,6 +78,15 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
                 }));
     }
 
+    private static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+
+    }
     private void onSuccess(Response<ResponseSignIn> response) {
         getViewState().hideLoadingIndicator();
         getViewState().setEnabledLoginBtn(true);
@@ -108,10 +127,12 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     }
 
     public void onDialogBtnClicked(){
+        getViewState().showProgressDialog();
         Disposable d = helper.requestRestore(restoreLogin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
+                    getViewState().hideProgressDialog();
                     if (responseBodyResponse.isSuccessful()){
                         getViewState().showSmsFieldDialog();
                         getViewState().showToastyMessage("Код отправлен");
@@ -120,6 +141,7 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
                         getViewState().showToastyMessage(jObjError.getJSONObject("data").getString("error"));
                     }
                 }, throwable -> {
+                    getViewState().hideProgressDialog();
                     throwable.printStackTrace();
                     getViewState().showToastyMessage("Error, try later");
                 });
@@ -135,10 +157,12 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
             getViewState().showToastyMessage("Заполните все поля");
             return;
         }
+        getViewState().showProgressDialog();
         Disposable d = helper.restorePassword(restoreLogin, restorePassword, restoreCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
+                    getViewState().hideProgressDialog();
                     if (responseBodyResponse.isSuccessful()){
                         getViewState().showToastyMessage("Восстановление прошло успешно");
                         getViewState().hideRestorePasswordDialog();
@@ -148,6 +172,7 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
                     }
 
                 }, throwable -> {
+                    getViewState().hideProgressDialog();
                     throwable.printStackTrace();
                     getViewState().showToastyMessage("Error, try later");
                 });
@@ -157,13 +182,4 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     public void setFlag(Boolean flag) {
         this.flag = flag;
     }
-
-//    public void smsReady() {
-//        if (restoreCode.equals("")) {
-//            getViewState().showToastyMessage("Введите код");
-//            return;
-//        }
-//        flag = true;
-//        getViewState().updateDialogModeEnterPassword();
-//    }
 }

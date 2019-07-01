@@ -1,11 +1,11 @@
+
 package com.example.medicapp.networking.response.results;
 
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class Info{
+public class Info {
 
     @SerializedName("id")
     @Expose
@@ -18,10 +18,10 @@ public class Info{
     private List<String> backbone = null;
     @SerializedName("other")
     @Expose
-    private List<String> other = null;
+    private List<Other> other = null;
     @SerializedName("created")
     @Expose
-    private Long created;
+    private Integer created;
 
     public String getId() {
         return id;
@@ -47,19 +47,19 @@ public class Info{
         this.backbone = backbone;
     }
 
-    public List<String> getOther() {
+    public List<Other> getOther() {
         return other;
     }
 
-    public void setOther(List<String> other) {
+    public void setOther(List<Other> other) {
         this.other = other;
     }
 
-    public Long getCreated() {
+    public Integer getCreated() {
         return created;
     }
 
-    public void setCreated(Long created) {
+    public void setCreated(Integer created) {
         this.created = created;
     }
 

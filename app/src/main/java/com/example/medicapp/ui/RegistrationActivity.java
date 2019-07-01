@@ -161,11 +161,13 @@ public class RegistrationActivity extends MvpAppCompatActivity
     @Override
     public void showLoadingIndicator() {
         progressBar.setVisibility(View.VISIBLE);
+        reg.setImageResource(0);
     }
 
     @Override
     public void hideLoadingIndicator() {
         progressBar.setVisibility(View.GONE);
+        reg.setImageResource(R.drawable.ic_arrow_forward_black_24dp);
     }
 
     @Override

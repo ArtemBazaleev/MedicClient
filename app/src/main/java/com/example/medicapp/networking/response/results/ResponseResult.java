@@ -1,9 +1,10 @@
+
 package com.example.medicapp.networking.response.results;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResponseResults {
+public class ResponseResult {
 
     @SerializedName("message")
     @Expose
@@ -27,4 +28,5 @@ public class ResponseResults {
     public void setData(Data data) {
         this.data = data;
     }
+
 }
