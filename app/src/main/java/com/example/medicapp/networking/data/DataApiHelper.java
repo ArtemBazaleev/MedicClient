@@ -107,4 +107,10 @@ public class DataApiHelper {
         return api.getReservedDates(idAndToken, id);
     }
 
+    public Observable<Response<ResponseBody>> getAdvice(String token, String id, int skip, int limit){
+        Retrofit retrofit = provideRetrofit();
+        String idAndToken = "token=" + token + "; " + "id=" + id;
+        DataApi api= retrofit.create(DataApi.class);
+        return api.getAdvice(idAndToken, skip, limit);
+    }
 }

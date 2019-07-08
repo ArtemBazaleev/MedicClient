@@ -42,8 +42,8 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     }
 
     public void onCreate(){
-        if (!preferences.getToken().equals(""))
-            getViewState().startMainActivity(preferences.getToken(), preferences.getUserID());
+//        if (!preferences.getToken().equals(""))
+//            getViewState().startMainActivity(preferences.getToken(), preferences.getUserID());
     }
 
     public void onLoginChanged(String login){
@@ -91,8 +91,14 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
         getViewState().hideLoadingIndicator();
         getViewState().setEnabledLoginBtn(true);
         if (response.isSuccessful()){
+            if (!Objects.requireNonNull(response.body()).getData().getRole().equals("patient")){
+                getViewState().showToastyMessage("Доступно только для пациента");
+                return;
+            }
             preferences.setToken(Objects.requireNonNull(response.body()).getData().getToken());
             preferences.setUserID(Objects.requireNonNull(response.body()).getData().getId());
+            preferences.setLogin(login);
+            preferences.setPassword(password);
             getViewState().startMainActivity(
                     Objects.requireNonNull(response.body()).getData().getToken(),
                     Objects.requireNonNull(response.body()).getData().getId()
@@ -127,6 +133,16 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     }
 
     public void onDialogBtnClicked(){
+        if (restoreLogin.length() < 3) {
+            getViewState().showToastyMessage("Проверьте логин");
+            return;
+        }
+        if (isNumeric(restoreLogin)){
+            if (restoreLogin.charAt(0) != '+')
+                restoreLogin = "+" + restoreLogin;
+            if (restoreLogin.charAt(1) == '8')
+                restoreLogin = "+7" + restoreLogin.substring(2);
+        }
         getViewState().showProgressDialog();
         Disposable d = helper.requestRestore(restoreLogin)
                 .subscribeOn(Schedulers.io())

@@ -18,6 +18,8 @@ import devliving.online.securedpreferencestore.DefaultRecoveryHandler;
 import devliving.online.securedpreferencestore.SecuredPreferenceStore;
 
 public class SecuredSharedPreferences {
+    private static final String LOGIN = "SecuredLogin";
+    private static final String PASSWORD = "SecuredPAss";
     private SecuredPreferenceStore securedSharedPreferences;
 
     private static final String TOKEN = "SECURED_TOKEN";
@@ -74,5 +76,24 @@ public class SecuredSharedPreferences {
 
     public String getUserID(){
         return securedSharedPreferences.getString(ID,"");
+    }
+
+    public String getLogin(){
+        return securedSharedPreferences.getString(LOGIN, "");
+    }
+    public void setLogin(String login){
+        securedSharedPreferences.edit()
+                .putString(LOGIN, login)
+                .apply();
+    }
+
+    public String getPassword(){
+        return securedSharedPreferences.getString(PASSWORD, "");
+    }
+
+    public void setPassword(String password){
+        securedSharedPreferences.edit()
+                .putString(PASSWORD, password)
+                .apply();
     }
 }

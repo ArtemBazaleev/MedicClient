@@ -126,6 +126,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         holder.startAnimation(animation);
     }
 
+    public void addMessages(List<BaseMessage> baseMessages) {
+        for (BaseMessage i:baseMessages) {
+            mMessageList.add(0, i);
+            notifyItemInserted(0);
+        }
+
+    }
+
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
 

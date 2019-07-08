@@ -130,7 +130,7 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     @Override
     public void setDateText(String txt) {
         choseDate.setText(String.format("%s%s", getString(R.string.your_date), txt));
-        choseDate.setTextColor(getResources().getColor(R.color.color_white));
+        choseDate.setTextColor(Color.WHITE);
     }
 
     @Override

@@ -2,11 +2,15 @@ package com.example.medicapp.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +28,13 @@ import com.example.medicapp.custom.CircleMedicView;
 import com.example.medicapp.presentation.view.IChatActivityView;
 import com.example.medicapp.utils.DpToPx;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.JsonParseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +51,7 @@ import org.json.JSONObject;
 
 public class ChatActivity extends AppCompatActivity
         implements IChatActivityView, MessageListAdapter.IOnReceivedImageClicked {
+
     @BindView(R.id.recycler_chat) RecyclerView recyclerView;
     @BindView(R.id.imageButton2) ImageButton imageButton;
     @BindView(R.id.editText4) EditText text;
@@ -52,6 +62,9 @@ public class ChatActivity extends AppCompatActivity
     @BindView(R.id.circleImageView2) CircleImageView circleImageView;
     @BindView(R.id.addBtnChat) ImageView addBtn;
     private static final int GALLERY_REQUEST_CODE = 65535;
+    private String dialogID = "";
+    private LinkedList<BaseMessage> history = new LinkedList<>();
+    private int historyShown = 0;
 
     private Socket mSocket;
     private App app;
@@ -64,7 +77,7 @@ public class ChatActivity extends AppCompatActivity
         app = (App)getApplication();
         initSocket();
         hideAll();
-        LinearLayoutManager manager= new LinearLayoutManager(this);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         List<BaseMessage> messages = new ArrayList<>();
         adapter = new MessageListAdapter(this, messages);
@@ -85,11 +98,12 @@ public class ChatActivity extends AppCompatActivity
                 message.put("message", text.getText().toString());
                 Log.d("",message.toString());
                 mSocket.emit("message", message);
+                text.setText("");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             adapter.addMessage(baseMessage);
-
+            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         });
 
         addBtn.setOnClickListener(l->{
@@ -98,6 +112,38 @@ public class ChatActivity extends AppCompatActivity
             String[] mimeTypes = {"image/jpeg", "image/png"};
             intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
             startActivityForResult(intent, GALLERY_REQUEST_CODE);
+        });
+        initTopScroll();
+    }
+
+    private void initTopScroll() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (Objects.requireNonNull(manager).findFirstCompletelyVisibleItemPosition() == 0){
+                    Log.d("onScrollStateChanged: ","called!!!!");
+                    if (history.size() == historyShown)
+                        return;
+                    else {
+                        if (historyShown + 50 < history.size()) {//показываем по 50 сообщений
+                            adapter.addMessages(history.subList(historyShown, historyShown + 50));
+                            historyShown = historyShown + 50;
+                        }
+                        else{
+                            adapter.addMessages(history.subList(historyShown, history.size()));
+                            historyShown = history.size();
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
         });
     }
 
@@ -111,7 +157,6 @@ public class ChatActivity extends AppCompatActivity
         try {
             data.put("userId", app.getmUserID());
             data.put("token", app.getmToken());
-            //Log.d("", data.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -127,7 +172,6 @@ public class ChatActivity extends AppCompatActivity
         mSocket.on("error-pipe", error_pipe);
         Log.d("", "initSocket: " + data.toString());
         mSocket.emit("auth", data);
-
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data){
@@ -138,6 +182,19 @@ public class ChatActivity extends AppCompatActivity
                     BaseMessage baseMessage = new BaseMessage();
                     baseMessage.messageType = BaseMessage.MESSAGE_TYPE_SENDER_IMAGE;
                     baseMessage.setUri(selectedImage);
+                    try {
+                        // TODO: 7/5/2019 bitmap or file or what?
+                        Bitmap bitmap;
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream .toByteArray();
+                        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        Log.d("Image", encoded);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     adapter.addMessage(baseMessage);
                     recyclerView.scrollToPosition(adapter.getItemCount()-1);
             }
@@ -205,16 +262,19 @@ public class ChatActivity extends AppCompatActivity
     });
 
     private Emitter.Listener newMessage = args -> ChatActivity.this.runOnUiThread(() -> {
-        try {
+//        try {
             JSONObject data = (JSONObject) args[0];
-            BaseMessage baseMessage = new BaseMessage();
-            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
-            //baseMessage.setTime(data.getJSONObject("message").getLong("date"));
-            adapter.addMessage(baseMessage);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//            BaseMessage baseMessage = new BaseMessage();
+//            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
+//            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
+//            //baseMessage.setTime(data.getJSONObject("message").getLong("date"));
+//            if (!data.getJSONObject("message").getString("message").equals(app.getmUserID())) {
+//                adapter.addMessage(baseMessage);
+//                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     });
 
     private Emitter.Listener leavedDialog = args -> ChatActivity.this.runOnUiThread(() -> {
@@ -225,32 +285,57 @@ public class ChatActivity extends AppCompatActivity
     private Emitter.Listener messageReceive  = args -> ChatActivity.this.runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
         Log.d("messageReceive", data.toString());
+        try {
+            BaseMessage baseMessage = new BaseMessage();
+            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
+            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
+            //baseMessage.setTime(data.getJSONObject("message").getLong("date"));
+            String author = data.getJSONObject("message").getString("author");
+            Log.d( "MessageAuthor" , author);
+            if (app.getmUserID().equals(author))
+                return;
+            adapter.addMessage(baseMessage);
+            recyclerView.scrollToPosition(adapter.getItemCount()-1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     });
 
     private Emitter.Listener enteredDialog = args -> ChatActivity.this.runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
         Log.d("enteredDialog", data.toString());
+        try{
+            for (int i = 0; i<data.getJSONArray("messages").length(); i++) {
+                BaseMessage baseMessage = new BaseMessage();
+                baseMessage.setMessage(data.getJSONArray("messages").getJSONObject(i).getString("message"));
+                if (app.getmUserID().equals(data.getJSONArray("messages").getJSONObject(i).getString("author")))
+                    baseMessage.messageType = BaseMessage.MESSAGE_TYPE_SENDER;
+                else baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
+                history.add(baseMessage);
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        Log.d("HistorySize", String.valueOf(history.size()));
+        if (history.size() >= 50) {
+            adapter.addMessages(history.subList(0, 50));
+            historyShown = 50;
+        }
+        else{
+            adapter.addMessages(history);
+            historyShown = history.size();
+        }
     });
 
     private Emitter.Listener authOk = args -> ChatActivity.this.runOnUiThread(() -> {
         try {
             JSONObject data = (JSONObject) args[0];
             Log.d( "AuthOk: ", data.toString());
-            for (int i = 0; i <data.getJSONArray("dialogs").length() ; i++) {
-                for (int j = 0; j <data.getJSONArray("dialogs").getJSONObject(i).getJSONArray("participants").length() ; j++) {
-                    JSONObject participant = data.getJSONArray("dialogs").getJSONObject(i).getJSONArray("participants").getJSONObject(j);
-                    String id  = participant.getString("id");
-                    //Log.d("", id);
-//                    if (id.equals(patientID)){
-//                        JSONObject emitObj = new JSONObject();
-//                        emitObj.put("dialogId",data.getJSONArray("dialogs").getJSONObject(i).getString("id"));
-//                        mSocket.emit("enterInDialog", emitObj);
-//                        Log.d("", emitObj.toString());
-//                        break;
-//                    }
-                }
-
-            }
+            dialogID = data.getJSONArray("dialogs").getJSONObject(0).getString("id");
+            Log.d( "DialogID", dialogID);
+            JSONObject emitObj = new JSONObject();
+            emitObj.put("dialogId", dialogID);
+            mSocket.emit("enterInDialog", emitObj);
             Log.d("", data.toString());
         } catch (JSONException e) {
             e.printStackTrace();

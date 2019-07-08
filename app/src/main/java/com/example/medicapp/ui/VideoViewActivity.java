@@ -87,7 +87,7 @@ public class VideoViewActivity extends AppCompatActivity {
 
             }
         });
-        player.getToolbar().setOnClickListener(l-> hideSystemUI());
+        //player.getToolbar().setOnClickListener(l-> hideSystemUI());
     }
 
     @Override

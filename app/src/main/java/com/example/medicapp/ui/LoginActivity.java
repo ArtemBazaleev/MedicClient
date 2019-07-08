@@ -65,6 +65,7 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
         regBtn.setOnClickListener(l->presenter.onRegistrationClicked());
         enter.setOnClickListener(l->presenter.onBtnLoginClicked());
         forgotPassword.setOnClickListener(l->presenter.onForgotPassportClicked());
+
         login.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -98,6 +99,9 @@ public class LoginActivity extends MvpAppCompatActivity implements ILoginView {
 
             }
         });
+        SecuredSharedPreferences preferences = new SecuredSharedPreferences(getApplicationContext());
+        login.setText(preferences.getLogin());
+        password.setText(preferences.getPassword());
     }
 
     @Override

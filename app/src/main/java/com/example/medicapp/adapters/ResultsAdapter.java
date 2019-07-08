@@ -54,7 +54,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
         private TextView conclusion;
         private TextView desc;
 
-        public ResultHolder(@NonNull View itemView) {
+        ResultHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.constraintLayout5);
             date = itemView.findViewById(R.id.textView8);
@@ -79,6 +79,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
             else {
                 desc.setText(model.getDesc());
                 date.setText(model.getCreated());
+                constraintLayout.setVisibility(View.VISIBLE);
+                conclusion.setVisibility(View.GONE);
             }
         }
     }

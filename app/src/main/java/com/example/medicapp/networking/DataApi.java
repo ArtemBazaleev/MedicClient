@@ -67,4 +67,11 @@ public interface DataApi {
             @Header("Cookie") String tokenAndId,
             @Path("patientID") String userID
     );
+
+    @GET("advice")
+    Observable<Response<ResponseBody>> getAdvice(
+            @Header("Cookie") String tokenAndId,
+            @Query("skip") int skip,
+            @Query("limit") int limit
+    );
 }

@@ -12,6 +12,9 @@ public class Data {
     @SerializedName("token")
     @Expose
     private String token;
+    @SerializedName("role")
+    @Expose
+    private String role;
 
     public String getId() {
         return id;
@@ -29,4 +32,11 @@ public class Data {
         this.token = token;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

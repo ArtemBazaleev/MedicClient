@@ -73,9 +73,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
 
-    //
-    implementation 'com.github.appunite:video-player-android:1.2.0'
-
     // or use specific version
     implementation 'com.github.appunite:video-player-android:1.2.0'
 

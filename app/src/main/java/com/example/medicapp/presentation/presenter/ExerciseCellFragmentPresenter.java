@@ -55,7 +55,7 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
                         getViewState().showToastyMessage("Error, try later");
                     }));
         }
-        else {
+        else if (mode == ExerciseCellFragment.MODE_SUGGESTED){
             getViewState().showLoadingIndicator();
             d.add(apiHelper.getSuggestedExercisec(mToken, mID)
                     .subscribeOn(Schedulers.io())
@@ -95,7 +95,28 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
                         getViewState().hideLoadingIndicator();
                         getViewState().showToastyMessage("Error, try later");
                     }));
+        }else {
+            requestAdvice();
         }
+    }
+
+    private void requestAdvice() {
+        getViewState().showLoadingIndicator();
+        d.add(apiHelper.getAdvice(mToken, mID,0, 2000)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    getViewState().hideLoadingIndicator();
+                    if (responseBodyResponse.isSuccessful()) {
+                        Log.d("Exercise", responseBodyResponse.body().string());
+                    }
+                    else Log.d("Exercise", "onError:" + responseBodyResponse.errorBody().string());
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    getViewState().hideLoadingIndicator();
+                    getViewState().showToastyMessage("Error, try later");
+                }));
+
     }
 
     private void onSuccess(Response<ResponseExercise> responseBodyResponse) {

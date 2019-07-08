@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.appunite.appunitevideoplayer.PlayerActivity;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -45,6 +44,7 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
     private static final String ARG_MODE = "param1";
     public static final int MODE_ALL  = 0;
     public static  final int MODE_SUGGESTED = 1;
+    public static final int MODE_ADVICE = 2;
     private int mMode;
 
     private ExerciseAdapter adapter;
@@ -129,12 +129,12 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
 
     @Override
     public void startVideoViewActivity(String url) {
-//        startActivity(PlayerActivity.getVideoPlayerIntent(Objects.requireNonNull(getContext()),
-//                url,
-//                "", R.drawable.ic_play_arrow_black_24dp));
-        Intent i = new Intent(getContext(), VideoViewActivity.class);
-        i.putExtra(VideoViewActivity.VIDEO, url);
-        Objects.requireNonNull(getActivity()).startActivity(i);
+        startActivity(PlayerActivity.getVideoPlayerIntent(Objects.requireNonNull(getContext()),
+                url,
+                "", R.drawable.ic_play_arrow_black_24dp));
+//        Intent i = new Intent(getContext(), VideoViewActivity.class);
+//        i.putExtra(VideoViewActivity.VIDEO, url);
+//        Objects.requireNonNull(getActivity()).startActivity(i);
     }
 
     @Override

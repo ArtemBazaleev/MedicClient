@@ -53,42 +53,6 @@ public class ExerciseFragment extends MvpAppCompatFragment implements IOnLoadMor
         tabAll = v.findViewById(R.id.all_exercises);
         tabSuggeted = v.findViewById(R.id.suggested_exercises);
         init();
-    //        RecyclerView r = v.findViewById(R.id.recycler_exercise);
-//        r.setLayoutManager(new LinearLayoutManager(getContext(),
-//                LinearLayoutManager.VERTICAL,false));
-//        List<ExerciseModel> models = new ArrayList<>();
-//        for (int i = 0; i<10; i++)
-//            models.add(new ExerciseModel());
-//        ExerciseModel model = new ExerciseModel();
-//        model.setLoadingIndicator(true);
-//        models.add(model);
-//        adapter = new ExerciseAdapter(getContext(),models,this);
-//        r.setAdapter(adapter);
-//        r.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-//                int a = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-//                if (!isLoading) {
-//                    if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1) {
-//                        //bottom of list!
-//                        isLoading = true;
-//                        List<ExerciseModel> list = new ArrayList<>();
-//                        for (int i = 0; i<10; i++)
-//                            list.add(new ExerciseModel());
-//                        isLoading = false;
-//                        adapter.addData(list);
-//                    }
-//                }
-//
-//            }
-//        });
         return v;
     }
     private void init(){
