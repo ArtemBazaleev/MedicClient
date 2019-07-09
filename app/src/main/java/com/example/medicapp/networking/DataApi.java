@@ -3,6 +3,7 @@ package com.example.medicapp.networking;
 
 import com.example.medicapp.networking.data.ProfileBody;
 import com.example.medicapp.networking.data.ReservationBody;
+import com.example.medicapp.networking.response.advice.AdviceResponse;
 import com.example.medicapp.networking.response.date.ResponseAvailableDate;
 import com.example.medicapp.networking.response.exercise.ResponseExercise;
 import com.example.medicapp.networking.response.reservations.ResponseReservations;
@@ -69,7 +70,7 @@ public interface DataApi {
     );
 
     @GET("advice")
-    Observable<Response<ResponseBody>> getAdvice(
+    Observable<Response<AdviceResponse>> getAdvice(
             @Header("Cookie") String tokenAndId,
             @Query("skip") int skip,
             @Query("limit") int limit

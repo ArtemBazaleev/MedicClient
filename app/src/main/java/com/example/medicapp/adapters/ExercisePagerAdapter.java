@@ -20,8 +20,6 @@ public class ExercisePagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return ExerciseCellFragment.newInstance(ExerciseCellFragment.MODE_SUGGESTED);
             case 1:
-                return ExerciseCellFragment.newInstance(ExerciseCellFragment.MODE_ADVICE);
-            case 2:
                 return ExerciseCellFragment.newInstance(ExerciseCellFragment.MODE_ALL);
             default:
                 return null;

@@ -17,15 +17,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.AdvicesActivity"></activity>
         <activity
             android:name=".ui.PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/PlayerTheme">
-
-        </activity>
+            android:theme="@style/PlayerTheme"></activity>
         <activity
             android:name=".ui.BackBoneViewActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.SpineViewActivity" />
 
         <service android:name=".service.MessageNotificationService" />

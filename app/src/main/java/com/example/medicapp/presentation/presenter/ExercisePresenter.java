@@ -8,15 +8,6 @@ import com.example.medicapp.presentation.view.IExerciseView;
 @InjectViewState
 public class ExercisePresenter extends MvpPresenter<IExerciseView> {
 
-    public void onExerciseClicked(ExerciseModel data){
 
-    }
-
-    private void provideData(){
-
-    }
-
-    public void onViewCreated(){
-    }
 
 }

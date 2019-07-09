@@ -3,6 +3,7 @@ package com.example.medicapp.networking.data;
 import com.example.medicapp.Constants;
 import com.example.medicapp.model.ProfileModel;
 import com.example.medicapp.networking.DataApi;
+import com.example.medicapp.networking.response.advice.AdviceResponse;
 import com.example.medicapp.networking.response.date.ResponseAvailableDate;
 import com.example.medicapp.networking.response.exercise.ResponseExercise;
 import com.example.medicapp.networking.response.reservations.ResponseReservations;
@@ -107,7 +108,7 @@ public class DataApiHelper {
         return api.getReservedDates(idAndToken, id);
     }
 
-    public Observable<Response<ResponseBody>> getAdvice(String token, String id, int skip, int limit){
+    public Observable<Response<AdviceResponse>> getAdvice(String token, String id, int skip, int limit){
         Retrofit retrofit = provideRetrofit();
         String idAndToken = "token=" + token + "; " + "id=" + id;
         DataApi api= retrofit.create(DataApi.class);

@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/sf_compact_rounded_bold"
-        android:text="Упражнения и советы"
+        android:text="Упражнения"
         android:textColor="@color/default_selected_day_background_start_color"
         android:textSize="@dimen/header_txt_size"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,31 +37,40 @@
             android:id="@+id/all_exercises"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:text="Назначенные" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/advices_tab"
-            android:text="Советы"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <android.support.design.widget.TabItem
             android:id="@+id/suggested_exercises"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Все упражнения" />
-
-
     </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAdvice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+
+    <Button
+        android:id="@+id/buttonAdvice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/shape_round_gradient_btn"
+        android:fontFamily="@font/sf_compact_rounded_bold"
+        android:text="Просмотреть советы"
+        android:textAllCaps="false"
+        android:textColor="#fafafa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

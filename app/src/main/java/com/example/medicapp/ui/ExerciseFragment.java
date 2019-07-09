@@ -1,6 +1,7 @@
 package com.example.medicapp.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabItem;
@@ -10,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -23,40 +25,35 @@ import com.example.medicapp.presentation.view.IExerciseView;
 
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class ExerciseFragment extends MvpAppCompatFragment implements IOnLoadMore, IExerciseView {
 
     public ExerciseFragment() {
         // Required empty public constructor
     }
+    @BindView(R.id.tab_layout) TabLayout tabLayout;
+    @BindView(R.id.viewPager) ViewPager viewPager;
+    @BindView(R.id.buttonAdvice) Button advicesBtn;
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private ExercisePagerAdapter adapter;
-    private TabItem tabAll;
-    private TabItem tabSuggeted;
 
     @InjectPresenter
     ExercisePresenter presenter;
 
-
-
-//    private ExerciseAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_exercise, container, false);
-        tabLayout = v.findViewById(R.id.tab_layout);
-        viewPager = v.findViewById(R.id.viewPager);
-        tabAll = v.findViewById(R.id.all_exercises);
-        tabSuggeted = v.findViewById(R.id.suggested_exercises);
+        ButterKnife.bind(this,v);
         init();
         return v;
     }
     private void init(){
-        adapter = new ExercisePagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), tabLayout.getTabCount());
+        ExercisePagerAdapter adapter = new ExercisePagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
@@ -76,6 +73,11 @@ public class ExerciseFragment extends MvpAppCompatFragment implements IOnLoadMor
             }
         });
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        advicesBtn.setOnClickListener(l->{
+            Intent i = new Intent(getContext(), AdvicesActivity.class);
+            startActivity(i);
+        });
     }
 
 

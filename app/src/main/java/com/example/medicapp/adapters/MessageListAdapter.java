@@ -67,6 +67,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     // Inflates the appropriate layout according to the ViewType.
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
