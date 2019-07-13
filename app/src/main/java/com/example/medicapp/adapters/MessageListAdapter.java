@@ -203,13 +203,20 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private class SentMessageImageHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-
+        private BaseMessage message;
         SentMessageImageHolder(@NonNull View view) {
             super(view);
             imageView = itemView.findViewById(R.id.imageReceived);
+            imageView.setOnClickListener(this::onClick);
+        }
+
+        private void onClick(View view) {
+            if (mListener!=null)
+                mListener.onReceivedImage(message);
         }
 
         void onBind(BaseMessage baseMessage){
+            message = baseMessage;
             Glide.with(mContext)
                     .load(baseMessage.getUri())
                     .into(imageView);

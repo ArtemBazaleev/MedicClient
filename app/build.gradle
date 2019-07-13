@@ -61,6 +61,9 @@ dependencies {
     //socket IO
     implementation 'com.github.nkzawa:socket.io-client:0.6.0'
 
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.3.0'
+
+
     //securedPreferences
 
     implementation 'online.devliving:securedpreferencestore:0.7.3'

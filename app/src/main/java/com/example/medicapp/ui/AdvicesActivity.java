@@ -2,6 +2,7 @@ package com.example.medicapp.ui;
 
 import android.support.constraint.ConstraintLayout;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,6 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.medicapp.App;
 import com.example.medicapp.R;
+import com.example.medicapp.adapters.AdviceParentAdapter;
 import com.example.medicapp.model.AdviceModel;
 import com.example.medicapp.presentation.presenter.AdvicesActivityPresenter;
 import com.example.medicapp.presentation.view.AdviceActivityView;
@@ -29,7 +31,7 @@ public class AdvicesActivity extends MvpAppCompatActivity implements AdviceActiv
 
 
     @ProvidePresenter
-    AdvicesActivityPresenter peovidePresenter(){
+    AdvicesActivityPresenter providePresenter(){
         App app = (App) getApplication();
         return new AdvicesActivityPresenter(app.getmToken(), app.getmUserID());
     }
@@ -52,7 +54,8 @@ public class AdvicesActivity extends MvpAppCompatActivity implements AdviceActiv
 
     @Override
     public void loadData(List<AdviceModel> models) {
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new AdviceParentAdapter(this, models));
     }
 
     @Override

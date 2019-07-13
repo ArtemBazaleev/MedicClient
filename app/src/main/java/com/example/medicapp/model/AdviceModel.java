@@ -10,6 +10,14 @@ public class AdviceModel {
 
     private int mMode;
 
+    public Advice getAdvice() {
+        return advice;
+    }
+
+    public void setAdvice(Advice advice) {
+        this.advice = advice;
+    }
+
     private Advice advice;
 
     public AdviceModel(Advice advice, int mode) {

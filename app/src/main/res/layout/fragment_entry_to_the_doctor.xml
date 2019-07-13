@@ -276,7 +276,7 @@
                 android:layout_marginBottom="9dp"
                 android:background="@drawable/shape_round_gradient_btn"
                 android:enabled="false"
-                android:fontFamily="@font/sf_compact_rounded_light"
+                android:fontFamily="@font/sf_compact_rounded_bold"
                 android:text="Записаться"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"

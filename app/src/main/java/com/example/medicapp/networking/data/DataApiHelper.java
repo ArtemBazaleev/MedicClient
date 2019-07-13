@@ -114,4 +114,12 @@ public class DataApiHelper {
         DataApi api= retrofit.create(DataApi.class);
         return api.getAdvice(idAndToken, skip, limit);
     }
+
+    public Observable<Response<ResponseBody>> addMessages(String token, String id, Long count){
+        Retrofit retrofit = provideRetrofit();
+        String idAndToken = "token=" + token + "; " + "id=" + id;
+        DataApi api= retrofit.create(DataApi.class);
+        return api.requestMoreMessages(idAndToken, id, new MoreMessagesBody(count));
+    }
+
 }

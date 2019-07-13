@@ -378,6 +378,7 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/shape_round_gradient_btn"
                 android:text="Cохранить"
+                android:fontFamily="@font/sf_compact_rounded_bold"
                 android:textAllCaps="false"
                 android:textColor="#fafafa"
                 android:enabled="false"

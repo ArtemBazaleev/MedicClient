@@ -4,8 +4,12 @@ import android.app.Application;
 import android.os.CountDownTimer;
 import android.util.Log;
 
+import com.example.medicapp.ui.ChatActivity;
+import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -89,6 +93,5 @@ public class App extends Application implements ITimerSms {
     public Socket getmSocket(){
         return mSocket;
     }
-
 
 }

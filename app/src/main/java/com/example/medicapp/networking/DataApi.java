@@ -1,6 +1,7 @@
 package com.example.medicapp.networking;
 
 
+import com.example.medicapp.networking.data.MoreMessagesBody;
 import com.example.medicapp.networking.data.ProfileBody;
 import com.example.medicapp.networking.data.ReservationBody;
 import com.example.medicapp.networking.response.advice.AdviceResponse;
@@ -74,5 +75,12 @@ public interface DataApi {
             @Header("Cookie") String tokenAndId,
             @Query("skip") int skip,
             @Query("limit") int limit
+    );
+
+    @POST("patient/{patientID}/purchase/messages")
+    Observable<Response<ResponseBody>> requestMoreMessages(
+            @Header("Cookie") String tokenAndId,
+            @Path("patientID") String userID,
+            @Body MoreMessagesBody body
     );
 }

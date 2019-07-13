@@ -36,7 +36,7 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".ui.ChatActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait">
