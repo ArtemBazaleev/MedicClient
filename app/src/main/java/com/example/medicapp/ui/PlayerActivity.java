@@ -401,6 +401,7 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback,
         }
         playerNeedsPrepare = true;
         showControls();
+        Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
     }
 
     @Override

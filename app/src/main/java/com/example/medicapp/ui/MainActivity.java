@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ import org.json.JSONObject;
 public class MainActivity extends MvpAppCompatActivity implements IMainActivityView {
     public static final int RESULT_CHAT = 6458;
     private static final String CHANNEL_ID = "ClientChanel";
+    private static final String TAG = "MainActivity" ;
 
     private Fragment entryToTheDoctorFragment;
     private Fragment exerciseFragment;
@@ -77,13 +81,14 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navigation = findViewById(R.id.navigation);
-        //initSocket();
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         presenter.onCreate();
     }
 
     private void initSocket() {
+        Log.d(TAG, "initSocket: called");
         App app = (App)getApplication();
+        //app.initSocket();
         mSocket = app.getmSocket();
         if (!mSocket.connected())
             mSocket.connect();
@@ -95,7 +100,10 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
             e.printStackTrace();
         }
         mSocket.emit("auth", data);
-        mSocket.on("newMessage",newMessage);    }
+        mSocket.on("newMessage", newMessage);
+        mSocket.on("error-pipe", error_pipe);
+        mSocket.on("authOk", authOk);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -200,18 +208,10 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
     private Emitter.Listener newMessage = args -> this.runOnUiThread(() -> {
         try {
-        JSONObject data = (JSONObject) args[0];
-        createNotificationChannel();
-        showNotif("Врач","Сообщение:",data.getJSONObject("message").getString("message"));
-
-//            BaseMessage baseMessage = new BaseMessage();
-//            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-//            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
-//            //baseMessage.setTime(data.getJSONObject("message").getLong("date"));
-//            if (!data.getJSONObject("message").getString("message").equals(app.getmUserID())) {
-//                adapter.addMessage(baseMessage);
-//                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-//            }
+            JSONObject data = (JSONObject) args[0];
+            Log.d(TAG, "newMessage: " + data.toString());
+            createNotificationChannel();
+            showNotif("Врач","Сообщение:",data.getJSONObject("message").getString("message"));
         } catch (Exception e) {
             e.printStackTrace();
        }
@@ -238,7 +238,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         Intent intent = new Intent(this, ChatActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(title)
@@ -247,7 +247,10 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
                         .bigText(contentText))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
+                .setSound(alarmSound)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                 .setAutoCancel(true);
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         // notificationId is a unique int for each notification that you must define
@@ -256,7 +259,44 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: called");
+        App app = (App)getApplication();
+        if (app.getmToken().equals("") || app.getmUserID().equals("")){
+            finish();
+        }
+        initSocket();
     }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mSocket.off("newMessage", newMessage);
+        mSocket.off("error-pipe", error_pipe);
+        mSocket.off("authOk", authOk);
+        //mSocket.disconnect();
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        App app = (App) getApplication();
+        app.disconnect();
+    }
+
+
+    private Emitter.Listener error_pipe  = args -> this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d("error_pipe", data.toString());
+    });
+
+    private Emitter.Listener authOk = args -> this.runOnUiThread(() -> {
+        try {
+            JSONObject data = (JSONObject) args[0];
+            Log.d( "AuthOk: ", data.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    });
+
 }

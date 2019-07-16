@@ -3,12 +3,27 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.iceteck.silicompressorr.SiliCompressor;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 //import android.provider.<span id="IL_AD11" class="IL_AD">MediaStore</span>;
 
@@ -169,5 +184,68 @@ public class ImageFilePath {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri
                 .getAuthority());
+    }
+
+    public String compressVideo(Intent data, Context context) {
+        String filePath = "";
+        try {
+            filePath = SiliCompressor.with(context)
+                    .compressVideo(ImageFilePath.getPath(
+                            context,
+                            data.getData()),
+                            context.getCacheDir().getPath()
+                    );
+            return filePath;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("ChatActivity", "VideoCompressed!" + filePath);
+        return "";
+    }
+
+    public static String fileToBase64(Intent data, Context context){
+        try {
+            Log.d("ChatActivity", "fileToBase64: " + ImageFilePath.getPath(context, data.getData()));
+            InputStream inputStream = new FileInputStream(ImageFilePath.getPath(context, data.getData()));//You can get an inputStream using any IO API
+            byte[] bytes;
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            try {
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bytes = output.toByteArray();
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String fileToBase64(String path, Context context){
+        try {
+            InputStream inputStream = new FileInputStream(path);//You can get an inputStream using any IO API
+            byte[] bytes;
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            try {
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bytes = output.toByteArray();
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

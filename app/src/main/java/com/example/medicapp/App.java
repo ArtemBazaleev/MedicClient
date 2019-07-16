@@ -26,6 +26,14 @@ public class App extends Application implements ITimerSms {
     @Override
     public void onCreate() {
         super.onCreate();
+        initSocket();
+    }
+
+    public void disconnect(){
+        mSocket.disconnect();
+    }
+
+    public void initSocket(){
         try {
             IO.Options mOptions = new IO.Options();
             mOptions.path = "/socstream/";
@@ -93,5 +101,7 @@ public class App extends Application implements ITimerSms {
     public Socket getmSocket(){
         return mSocket;
     }
+
+
 
 }

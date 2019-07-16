@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.example.medicapp.R;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
+import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.github.piasy.biv.view.BigImageView;
@@ -35,6 +38,8 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ORIENTATION_USE_EXIF;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -111,6 +116,9 @@ public class ResultViewActivity extends AppCompatActivity {
     @BindView(R.id.bigImage) BigImageView bigImageView;
     @BindView(R.id.save) Button saveBtn;
     @BindView(R.id.share_btn) Button shareBtn;
+    @BindView(R.id.rotateBtn) Button rotateBtn;
+    @BindView(R.id.fullscreen_content) ConstraintLayout constraintContent;
+    private float rotation = 0;
     private String photoUrl;
     public static final String IMAGE_PARAM = "IMAGE_PARAMS";
 
@@ -174,7 +182,12 @@ public class ResultViewActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return;
             }
-            bigImageView.saveImageIntoGallery();
+            try {
+                bigImageView.saveImageIntoGallery();
+            }catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(this, "Ошибка сохранения фотографии", Toast.LENGTH_SHORT).show();
+            }
         });
 
         shareBtn.setOnClickListener(l->{
@@ -182,15 +195,33 @@ public class ResultViewActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return;
             }
-            bigImageView.setImageSaveCallback(callbackShare);
-            bigImageView.saveImageIntoGallery();
-            bigImageView.setImageSaveCallback(callbackSave);
+            try {
+                bigImageView.setImageSaveCallback(callbackShare);
+                bigImageView.saveImageIntoGallery();
+                bigImageView.setImageSaveCallback(callbackSave);
+            }catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(this, "Ошибка ", Toast.LENGTH_SHORT).show();
+            }
         });
 
         bigImageView.setImageViewFactory(new GlideImageViewFactory());
         bigImageView.setImageSaveCallback(callbackSave);
+
         Button b = findViewById(R.id.dummy_button);
         b.setOnClickListener(l-> finish());
+
+
+
+        rotateBtn.setOnClickListener(l-> { //changing orientation
+            int w = constraintContent.getWidth();
+            int h = constraintContent.getHeight();
+            constraintContent.setRotation(rotation+=90);
+            ViewGroup.LayoutParams lp = constraintContent.getLayoutParams();
+            lp.height = w;
+            lp.width = h;
+            constraintContent.requestLayout();
+        });
 
     }
 
