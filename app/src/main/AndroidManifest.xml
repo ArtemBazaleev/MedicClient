@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -19,17 +18,20 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.AdvicesActivity"
-            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ui.AdvicesActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/PlayerTheme"/>
+            android:theme="@style/PlayerTheme" />
         <activity
             android:name=".ui.BackBoneViewActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.SpineViewActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.SpineViewActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".service.MessageNotificationService" />
 
@@ -40,7 +42,8 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".ui.ChatActivity"
-            android:screenOrientation="portrait"/>
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait">

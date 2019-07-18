@@ -21,4 +21,6 @@ public interface IExerciseCellFragment extends MvpView {
     void showContentNotFound();
 
     void hideContentNotFound();
+
+    void startLoginActivityAndClearStack();
 }

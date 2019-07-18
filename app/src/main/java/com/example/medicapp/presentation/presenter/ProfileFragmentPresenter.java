@@ -67,8 +67,10 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
                             getViewState().hideProgress();
                             if (responseBodyResponse.isSuccessful())
                                 getViewState().showToastyMessage("Успех");
-                            else
+                            else {
                                 Log.d("Profile", "onSubmitBtnClicked: " + responseBodyResponse.errorBody().string());
+                                getViewState().startLoginActivityAndClearStack();
+                            }
                         },
                         throwable -> {
                             getViewState().hideProgress();

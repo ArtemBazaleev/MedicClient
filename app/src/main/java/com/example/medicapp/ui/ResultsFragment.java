@@ -111,5 +111,12 @@ public class ResultsFragment extends MvpAppCompatFragment
     public void hideRefreshing() {
         swipeRefreshLayout.setRefreshing(false);
     }
+
+    @Override
+    public void startLoginActivityAndClearStack() {
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
     //MVP
 }

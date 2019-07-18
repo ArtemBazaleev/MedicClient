@@ -31,4 +31,7 @@ public interface IEntryToTheDoctorFragmentView extends MvpView {
     void showProgressTime();
 
     void hideProgressTime();
+
+    void startLoginActivityAndClearStack();
+
 }

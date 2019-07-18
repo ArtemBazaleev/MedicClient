@@ -132,9 +132,6 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
         startActivity(PlayerActivity.getVideoPlayerIntent(Objects.requireNonNull(getContext()),
                 url,
                 "", R.drawable.ic_play_arrow_black_24dp));
-//        Intent i = new Intent(getContext(), VideoViewActivity.class);
-//        i.putExtra(VideoViewActivity.VIDEO, url);
-//        Objects.requireNonNull(getActivity()).startActivity(i);
     }
 
     @Override
@@ -155,6 +152,13 @@ public class ExerciseCellFragment extends MvpAppCompatFragment
     @Override
     public void hideContentNotFound() {
         contentNotFound.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void startLoginActivityAndClearStack() {
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
     //MVP
 }

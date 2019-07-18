@@ -154,7 +154,7 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
                         getViewState().showAlertReservations(data);
                     }else {
                         Log.d("onViewCreated: ", "NEOK");
-                        getViewState().showToastyMessage("Error, try to relogin");
+                        getViewState().startLoginActivityAndClearStack();
                     }
                 },throwable -> {
                     throwable.printStackTrace();

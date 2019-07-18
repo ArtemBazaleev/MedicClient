@@ -233,4 +233,11 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
                     break;
             }
     };
+
+    @Override
+    public void startLoginActivityAndClearStack() {
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
 }

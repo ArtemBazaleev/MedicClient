@@ -19,4 +19,6 @@ public interface AdviceActivityView extends MvpView {
     void hideLoadingIndicator();
 
     void loadData(List<AdviceModel> models);
+
+    void startLoginActivityAndClearStack();
 }

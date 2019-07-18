@@ -3,7 +3,7 @@ package com.example.medicapp.ui;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -32,6 +32,8 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.ButterKnife;
+
 public class MainActivity extends MvpAppCompatActivity implements IMainActivityView {
     public static final int RESULT_CHAT = 6458;
     private static final String CHANNEL_ID = "ClientChanel";
@@ -47,8 +49,11 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
     private BottomNavigationView navigation;
     private int notificationId = 0;
+    private App app;
 
     private Socket mSocket;
+    private boolean inited = false;
+    private boolean hasChatDialog = false;
 
     @InjectPresenter
     MainActivityPresenter presenter;
@@ -64,7 +69,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
                         return true;
                     case R.id.navigation_chat:
                         presenter.onChatClicked();
-                        return true;
+                        return hasChatDialog;
                     case R.id.navigation_results:
                         presenter.onResultsClicked();
                         return true;
@@ -80,30 +85,14 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         presenter.onCreate();
+        app = (App)getApplication();
+
     }
 
-    private void initSocket() {
-        Log.d(TAG, "initSocket: called");
-        App app = (App)getApplication();
-        //app.initSocket();
-        mSocket = app.getmSocket();
-        if (!mSocket.connected())
-            mSocket.connect();
-        JSONObject data = new JSONObject();
-        try {
-            data.put("userId", app.getmUserID());
-            data.put("token", app.getmToken());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mSocket.emit("auth", data);
-        mSocket.on("newMessage", newMessage);
-        mSocket.on("error-pipe", error_pipe);
-        mSocket.on("authOk", authOk);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -161,7 +150,9 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
     @Override
     public void startChatActivity() {
-        startActivityForResult(new Intent(MainActivity.this, ChatActivity.class),RESULT_CHAT);
+        if (hasChatDialog)
+            startActivity(new Intent(MainActivity.this, ChatActivity.class));
+        else  showToastyMessage("Диалог с врачем не обнаружен");
     }
 
     @Override
@@ -206,18 +197,6 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private Emitter.Listener newMessage = args -> this.runOnUiThread(() -> {
-        try {
-            JSONObject data = (JSONObject) args[0];
-            Log.d(TAG, "newMessage: " + data.toString());
-            createNotificationChannel();
-            showNotif("Врач","Сообщение:",data.getJSONObject("message").getString("message"));
-        } catch (Exception e) {
-            e.printStackTrace();
-       }
-    });
-
-
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -236,8 +215,10 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
     private void showNotif(String title, String contentTitle, String contentText){
         Intent intent = new Intent(this, ChatActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(intent);
+
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
@@ -246,9 +227,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(contentText))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
                 .setSound(alarmSound)
-                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -260,43 +239,140 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
     @Override
     protected void onStart() {
-        super.onStart();
         Log.d(TAG, "onStart: called");
-        App app = (App)getApplication();
+        super.onStart();
+        if (inited)
+            return;
         if (app.getmToken().equals("") || app.getmUserID().equals("")){
             finish();
         }
+        app.initSocket();
         initSocket();
     }
 
     @Override
-    protected void onStop(){
-        super.onStop();
-        mSocket.off("newMessage", newMessage);
-        mSocket.off("error-pipe", error_pipe);
-        mSocket.off("authOk", authOk);
-        //mSocket.disconnect();
+    protected void onPause(){
+        super.onPause();
+        Log.d(TAG, "onPause: _______________________________________________________________");
+        offSocket();
     }
     @Override
     protected void onDestroy(){
         super.onDestroy();
+
+        //test
+        offSocket();
+        //test
         App app = (App) getApplication();
         app.disconnect();
     }
 
+    private void offSocket(){
+        mSocket.off("authOk",authOk);
+        //mSocket.off("enteredDialog",enteredDialog);
+        mSocket.off("messageReceive",messageReceive);
+        mSocket.off("leavedDialog",leavedDialog);
+        mSocket.off("newMessage",newMessage);
+        mSocket.off("messageListReceive",messageListReceive);
+        mSocket.off("error-pipe",error_pipe);
+        Log.d(TAG, "offSocket: called");
+        mSocket.disconnect();
+        inited = false;
+    }
 
-    private Emitter.Listener error_pipe  = args -> this.runOnUiThread(() -> {
+
+
+
+    ///test
+
+
+    private void initSocket() {
+        mSocket = app.getmSocket();
+        if (mSocket.connected())
+            Toast.makeText(this, "Connected!!", Toast.LENGTH_SHORT).show();
+        else mSocket.connect();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("userId", app.getmUserID());
+            data.put("token", app.getmToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectedError);
+        mSocket.on(Socket.EVENT_CONNECT, onConnected);
+        mSocket.on("authOk", authOk);
+        mSocket.on("messageReceive",messageReceive);
+        mSocket.on("leavedDialog",leavedDialog);
+        mSocket.on("newMessage",newMessage);
+        mSocket.on("messageListReceive", messageListReceive);
+        mSocket.on("error-pipe", error_pipe);
+        Log.d("", "initSocket: " + data.toString());
+        mSocket.emit("auth", data);
+        inited = true;
+    }
+
+
+    //events
+
+    private Emitter.Listener error_pipe  = args -> MainActivity.this.runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
-        Log.d("error_pipe", data.toString());
+        Log.d(TAG,"error_pipe  "+ data.toString());
     });
 
-    private Emitter.Listener authOk = args -> this.runOnUiThread(() -> {
+    private Emitter.Listener messageListReceive = args -> MainActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d(TAG,"messageListReceive  "+ data.toString());
+    });
+
+    private Emitter.Listener newMessage = args -> MainActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d(TAG,"newMessage  "+ data.toString());
+        try {
+            createNotificationChannel();
+            app.vibrate();
+            showNotif("Врач","Сообщение:", data.getJSONObject("message").getString("message"));
+        } catch (Exception e) {
+            e.printStackTrace();
+       }
+    });
+
+    private Emitter.Listener leavedDialog = args -> MainActivity.this.runOnUiThread(() -> {
+    });
+
+    private Emitter.Listener messageReceive  = args -> MainActivity.this.runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d(TAG,"messageReceive " + data.toString());
+
+    });
+
+
+    private Emitter.Listener authOk = args -> MainActivity.this.runOnUiThread(() -> {
         try {
             JSONObject data = (JSONObject) args[0];
-            Log.d( "AuthOk: ", data.toString());
-        } catch (Exception e) {
+            Log.d( TAG ,"AuthOk: " + data.toString());
+            JSONObject emitObj = new JSONObject();
+            if (!data.getJSONArray("dialogs").getJSONObject(0).has("id")) { // NO CHAT
+                hasChatDialog = false;
+                return;
+            }
+//            if (data.getJSONArray("dialogs").getJSONObject(0).has("unreadMessages"))
+//                Toast.makeText(this, data.getJSONArray("dialogs").getJSONObject(0).getInt("unreadMessages"), Toast.LENGTH_SHORT).show();
+            String dialogID = data.getJSONArray("dialogs").getJSONObject(0).getString("id");
+            emitObj.put("dialogId", dialogID);
+            hasChatDialog = true;
+            Log.d("", data.toString());
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     });
+
+    private Emitter.Listener onConnected = args -> MainActivity.this.runOnUiThread(() -> {
+
+    });
+
+    private Emitter.Listener onConnectedError = args -> MainActivity.this.runOnUiThread(() -> {
+
+    });
+
 
 }

@@ -26,4 +26,6 @@
     <string name="e_mail_or_phone_txt">Телефон или E-mail</string>
     <string name="password_txt">Пароль</string>
     <string name="confirm_password_txt">Повторите пароль</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
 </resources>

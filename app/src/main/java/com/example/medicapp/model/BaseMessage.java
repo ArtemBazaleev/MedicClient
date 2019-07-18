@@ -22,7 +22,7 @@ public class BaseMessage {
         this.time = time;
     }
 
-    private Long time;
+    private Long time = 0L;
 
     public String getFrom() {
         return from;

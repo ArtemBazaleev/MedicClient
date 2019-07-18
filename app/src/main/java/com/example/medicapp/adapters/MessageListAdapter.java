@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.medicapp.model.BaseMessage;
 import com.example.medicapp.R;
 
+import java.util.Date;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -113,10 +114,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         BaseMessage message = mMessageList.get(position);
-        if (position == getItemCount()-1 && holder.getItemViewType()==VIEW_TYPE_MESSAGE_RECEIVED)
-            animateLeftToRight(holder.itemView);
-        if (position == getItemCount()-1 && holder.getItemViewType()==VIEW_TYPE_MESSAGE_SENT)
-            animateRightToLeft(holder.itemView);
+//        if (position == getItemCount()-1 && holder.getItemViewType()==VIEW_TYPE_MESSAGE_RECEIVED)
+//            animateLeftToRight(holder.itemView);
+//        if (position == getItemCount()-1 && holder.getItemViewType()==VIEW_TYPE_MESSAGE_SENT)
+//            animateRightToLeft(holder.itemView);
 
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_MESSAGE_SENT:
@@ -159,7 +160,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
-
+        SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
         SentMessageHolder(View itemView) {
             super(itemView);
             messageText =  itemView.findViewById(R.id.text_message_body);
@@ -170,8 +172,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText.setText(message.getMessage());
 
             // Format the stored timestamp into a readable String using method.
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+            //calendar.setTime(new Date(message.getTime()));
+            if (message.getTime() != 0L)
+                calendar.setTime(new Date(message.getTime()));
             String strDate = mdformat.format(calendar.getTime());
             timeText.setText(strDate);
         }
@@ -180,7 +184,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
         CircleImageView profileImage;
-
+        SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
         ReceivedMessageHolder(View itemView) {
             super(itemView);
             messageText =  itemView.findViewById(R.id.text_message_body);
@@ -192,8 +197,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         void bind(BaseMessage message) {
             messageText.setText(message.getMessage());
             // Format the stored timestamp into a readable String using method.
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            calendar.setTime(new Date(message.getTime()));
             String strDate = mdformat.format(calendar.getTime());
             timeText.setText(strDate);
             nameText.setText(message.getFrom());
@@ -204,11 +208,15 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         private ImageView imageView;
         private BaseMessage message;
         ImageView playBtn;
+        private TextView time;
+        SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
         ReceivedImageMessageHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageReceived);
             imageView.setOnClickListener(this);
             playBtn = itemView.findViewById(R.id.imageView4);
+            time = itemView.findViewById(R.id.text_message_time);
         }
         void onBind(BaseMessage message){
             this.message = message;
@@ -218,6 +226,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             if (message.messageType == BaseMessage.MESSAGE_TYPE_RECEIVER_VIDEO)
                 playBtn.setVisibility(View.VISIBLE);
             else playBtn.setVisibility(View.GONE);
+
+            calendar.setTime(new Date(message.getTime()));
+            String strDate = mdformat.format(calendar.getTime());
+            time.setText(strDate);
         }
 
         @Override
@@ -235,12 +247,16 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         ImageView imageView;
         ImageView playBtn;
+        private TextView time;
+        SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
         private BaseMessage message;
         SentMessageImageHolder(@NonNull View view) {
             super(view);
             imageView = itemView.findViewById(R.id.imageReceived);
             playBtn = view.findViewById(R.id.imageView4);
             imageView.setOnClickListener(this::onClick);
+            time = itemView.findViewById(R.id.text_message_time);
         }
 
         private void onClick(View view) {
@@ -261,6 +277,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             if (message.messageType == BaseMessage.MESSAGE_TYPE_SENDER_VIDEO)
                 playBtn.setVisibility(View.VISIBLE);
             else playBtn.setVisibility(View.GONE);
+
+            if (message.getTime()== 0L)
+                calendar.setTime(new Date(message.getTime()));
+            String strDate = mdformat.format(calendar.getTime());
+            time.setText(strDate);
         }
     }
 

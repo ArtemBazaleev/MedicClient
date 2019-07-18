@@ -61,7 +61,10 @@ public class AdvicesActivityPresenter extends MvpPresenter<AdviceActivityView> {
                         }
                         getViewState().loadData(models);
                     }
-                    else Log.d("Exercise", "onError:" + responseBodyResponse.errorBody().string());
+                    else{
+                        Log.d("Exercise", "onError:" + responseBodyResponse.errorBody().string());
+                        getViewState().startLoginActivityAndClearStack();
+                    }
                 }, throwable -> {
                     throwable.printStackTrace();
                     getViewState().hideLoadingIndicator();

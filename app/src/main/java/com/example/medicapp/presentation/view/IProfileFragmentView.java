@@ -20,4 +20,6 @@ public interface IProfileFragmentView extends MvpView {
     void showProgress();
 
     void hideProgress();
+
+    void startLoginActivityAndClearStack();
 }

@@ -89,7 +89,10 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
                             }
                             getViewState().loadExerciseModels(result);
                         }
-                        else Log.d("Exercise", "onError:" + responseBodyResponse.errorBody().string());
+                        else {
+                            Log.d("Exercise", "onError:" + responseBodyResponse.errorBody().string());
+                            getViewState().startLoginActivityAndClearStack();
+                        }
                     }, throwable -> {
                         throwable.printStackTrace();
                         getViewState().hideLoadingIndicator();
@@ -129,6 +132,7 @@ public class ExerciseCellFragmentPresenter extends MvpPresenter<IExerciseCellFra
             try {
                 Log.d("Exercise", "Token id: " + mToken + " " + mID);
                 Log.d("Exercise", "onError: " + Objects.requireNonNull(responseBodyResponse.errorBody()).string());
+                getViewState().startLoginActivityAndClearStack();
             } catch (IOException e) {
                 e.printStackTrace();
             }

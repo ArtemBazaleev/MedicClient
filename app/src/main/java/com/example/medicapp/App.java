@@ -1,7 +1,10 @@
 package com.example.medicapp;
 
 import android.app.Application;
+import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.example.medicapp.ui.ChatActivity;
@@ -22,11 +25,13 @@ public class App extends Application implements ITimerSms {
     private ITimerListener listener;
     private String mToken = "";
     private String mUserID = "";
-
+    private boolean inited = false;
+    private Vibrator vibrator;
     @Override
     public void onCreate() {
         super.onCreate();
-        initSocket();
+        //initSocket();
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
     public void disconnect(){
@@ -34,12 +39,16 @@ public class App extends Application implements ITimerSms {
     }
 
     public void initSocket(){
+        if (inited)
+            return;
+        Log.d("Application", "initSocket: Called !!");
         try {
             IO.Options mOptions = new IO.Options();
             mOptions.path = "/socstream/";
             mOptions.secure = false;
             Log.d("test", "initSocket: " + mOptions.toString());
             mSocket = IO.socket(Constants.BASE_SOCKET_URL, mOptions);
+            inited = true;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -102,6 +111,12 @@ public class App extends Application implements ITimerSms {
         return mSocket;
     }
 
-
+    public void vibrate(){
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(200);
+        }
+    }
 
 }

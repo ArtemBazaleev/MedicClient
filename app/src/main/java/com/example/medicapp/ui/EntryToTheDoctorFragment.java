@@ -1,6 +1,7 @@
 package com.example.medicapp.ui;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -238,5 +239,12 @@ public class EntryToTheDoctorFragment extends MvpAppCompatFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.onViewCreated();
+    }
+
+    @Override
+    public void startLoginActivityAndClearStack() {
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 }

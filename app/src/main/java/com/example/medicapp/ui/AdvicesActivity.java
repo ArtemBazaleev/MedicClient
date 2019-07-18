@@ -1,5 +1,6 @@
 package com.example.medicapp.ui;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +57,13 @@ public class AdvicesActivity extends MvpAppCompatActivity implements AdviceActiv
     public void loadData(List<AdviceModel> models) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new AdviceParentAdapter(this, models));
+    }
+
+    @Override
+    public void startLoginActivityAndClearStack() {
+        Intent i = new Intent(this, LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 
     @Override

@@ -111,6 +111,7 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
                     }
                     else{
                         Log.d(TAG, "onCreateView: "  + responseBodyResponse.errorBody().string());
+                        getViewState().startLoginActivityAndClearStack();
                     }
                 },throwable -> {
                     getViewState().hideRefreshing();
