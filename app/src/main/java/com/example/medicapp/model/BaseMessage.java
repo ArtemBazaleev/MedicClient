@@ -13,6 +13,15 @@ public class BaseMessage {
     public int messageType = 0;
     private String message;
     private String from;
+    private int resourceLocalPreview = -1;
+
+    public int getResourceLocalPreview() {
+        return resourceLocalPreview;
+    }
+
+    public void setResourceLocalPreview(int resourceLocalPreview) {
+        this.resourceLocalPreview = resourceLocalPreview;
+    }
 
     public Long getTime() {
         return time;

@@ -86,14 +86,17 @@ public class ChatActivity extends AppCompatActivity
     private Socket mSocket;
     private App app;
     private AlertDialog progressDialog;
+    private boolean inited = false;
     private boolean isInBackGround = false;
     private  boolean isFirstInited = false;
+    private LinkedList<JSONObject> imagesToSent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        imagesToSent = new LinkedList<>();
         app = (App)getApplication();
         app.initSocket();
         hideAll();
@@ -194,7 +197,8 @@ public class ChatActivity extends AppCompatActivity
         mSocket.on("enteredDialog",enteredDialogChat);
         mSocket.on("messageReceive",messageReceiveChat);
         mSocket.on("leavedDialog",leavedDialogChat);
-        mSocket.on("newMessage",newMessageChat);
+        if (!mSocket.hasListeners("newMessage"))
+            mSocket.on("newMessage",newMessageChat);
         mSocket.on("messageListReceive", messageListReceiveChat);
         mSocket.on("error-pipe", error_pipeChat);
         Log.d("", "initSocket: " + data.toString());
@@ -223,10 +227,11 @@ public class ChatActivity extends AppCompatActivity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.d("ChatActivity", "sending string..." + message.toString());
-                mSocket.emit("message", message);
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-                lastVisibleItem = adapter.getItemCount() - 1;
+                imagesToSent.add(message);
+                //Log.d("ChatActivity", "sending string..." + message.toString());
+//                mSocket.emit("message", message);
+//                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//                lastVisibleItem = adapter.getItemCount() - 1;
             }
     }
 
@@ -288,6 +293,7 @@ public class ChatActivity extends AppCompatActivity
         BaseMessage baseMessage = new BaseMessage();
         baseMessage.messageType = BaseMessage.MESSAGE_TYPE_SENDER_VIDEO;
         baseMessage.setUri(Uri.parse(path));
+        baseMessage.setResourceLocalPreview(R.drawable.bg_black_rect);
         adapter.addMessage(baseMessage);
     }
 
@@ -357,6 +363,7 @@ public class ChatActivity extends AppCompatActivity
         mSocket.off("messageListReceive", messageListReceiveChat);
         mSocket.off("error-pipe", error_pipeChat);
         isInBackGround = true;
+        inited = false;
         if (progressDialog!=null)
             progressDialog.dismiss();
     }
@@ -414,8 +421,8 @@ public class ChatActivity extends AppCompatActivity
                             baseMessage.setTime(data.getJSONObject("message").getLong("date"));
                             break;
                         case "video":
-                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-                            baseMessage.setMessage(Constants.BASEURL_VIDEO_TEMP + data.getJSONObject("message").getString("message"));
+                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_VIDEO;
+                            baseMessage.setUri(Uri.parse(Constants.BASEURL_VIDEO_TEMP + data.getJSONObject("message").getString("message")));
                             baseMessage.setTime(data.getJSONObject("message").getLong("date"));
                             break;
                     }
@@ -466,6 +473,11 @@ public class ChatActivity extends AppCompatActivity
     private Emitter.Listener enteredDialogChat = args -> ChatActivity.this.runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
         Log.d(TAG,"enteredDialog "+ data.toString());
+
+        for (JSONObject i:imagesToSent)
+            mSocket.emit("message", i);
+        imagesToSent.clear();
+
         if (isFirstInited)
             return;
         try{
