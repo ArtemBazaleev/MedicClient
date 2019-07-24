@@ -3,6 +3,7 @@ package com.example.medicapp.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,6 +157,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             notifyItemInserted(0);
         }
 
+    }
+
+    public void clearAll() {
+        mMessageList.clear();
+        notifyDataSetChanged();
+        Log.d("ADAPTER", "clearAll: "+ mMessageList.size());
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {

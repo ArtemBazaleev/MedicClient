@@ -90,11 +90,13 @@ public class ChatActivity extends AppCompatActivity
     private App app;
     private AlertDialog progressDialog;
     private boolean inited = false;
+    private boolean authOKFlag = true;
     private boolean isInBackGround = false;
     private  boolean isFirstInited = false;
     private boolean isLoadingMessages = false;
     private long totalMessages = 0;
     private LinkedList<JSONObject> imagesToSent;
+    private LinkedList<BaseMessage> messagesToAdd;
     private int firstVisibleItem;
 
     @Override
@@ -103,6 +105,7 @@ public class ChatActivity extends AppCompatActivity
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         imagesToSent = new LinkedList<>();
+        messagesToAdd = new LinkedList<>();
         app = (App)getApplication();
         init();
     }
@@ -186,6 +189,7 @@ public class ChatActivity extends AppCompatActivity
     private void initSocket() {
         Log.d(TAG, "initSocket: Called!");
         mSocket = app.getmSocket();
+        offSocket();
         onSocket();
         if (mSocket.connected()){
             Log.d(TAG, "initSocket: Connected");
@@ -200,6 +204,7 @@ public class ChatActivity extends AppCompatActivity
         }
         else{
             Log.d(TAG, "initSocket: socketNotInited...");
+            authOKFlag = false;
             app.forceInit();
             mSocket.connect();
         }
@@ -251,7 +256,8 @@ public class ChatActivity extends AppCompatActivity
                 baseMessage.setUri(selectedImage);
                 String base64Photo = fileToBase64(data);
                 String strMessage = "data:image/" + arrTemp[arrTemp.length - 1] + ";base64," + base64Photo;
-                adapter.addMessage(baseMessage);
+                messagesToAdd.add(baseMessage);
+                //adapter.addMessage(baseMessage);
                 JSONObject message = new JSONObject();
                 try {
                     message.put("message", strMessage);
@@ -390,6 +396,7 @@ public class ChatActivity extends AppCompatActivity
         isInBackGround = true;
         inited = false;
         setEnabledProgressBar(false);
+        mSocket.disconnect();
     }
 
 
@@ -524,14 +531,8 @@ public class ChatActivity extends AppCompatActivity
         JSONObject data = (JSONObject) args[0];
         Log.d(TAG,"enteredDialog "+ data.toString());
 
-        for (JSONObject i:imagesToSent){ //sending images after entering dialog
-            mSocket.emit("message", i);
-            recyclerView.scrollToPosition(adapter.getItemCount()-1);
-        }
-        imagesToSent.clear();
-
-        if (isFirstInited)
-            return;
+        adapter.clearAll();
+        history.clear();
         setEnabledProgressBar(false);
         try{
             for (int i = 0; i<data.getJSONArray("messages").length(); i++) {
@@ -586,7 +587,20 @@ public class ChatActivity extends AppCompatActivity
             adapter.addMessages(history);
             historyShown = history.size();
         }
+
+
         recyclerView.scrollToPosition(adapter.getItemCount()-1);
+        if (authOKFlag) { //esli avtorizovan
+            for (JSONObject i : imagesToSent) { //sending images after entering dialog
+                mSocket.emit("message", i);
+            }
+            for (BaseMessage i : messagesToAdd) {
+                adapter.addMessage(i);
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
+            imagesToSent.clear();
+            messagesToAdd.clear();
+        }
         lastVisibleItem = adapter.getItemCount()-1;
         firstVisibleItem = adapter.getItemCount()-1;
         isFirstInited = true;
@@ -594,39 +608,40 @@ public class ChatActivity extends AppCompatActivity
 
     private Emitter.Listener newMessageChat = args -> ChatActivity.this.runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
+
         Log.d("ChatActivity", "newMessage: " + data.toString());
-        Log.d("ChatActivity", "IsInBackground = " + isInBackGround);
-        try{
-            if (isInBackGround){
-                if (data.getString("chatId").equals(app.getDialogID())){
-                    BaseMessage baseMessage = new BaseMessage();
-                    switch (data.getJSONObject("message").getString("type")){
-                        case "text":
-                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-                            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
-                            baseMessage.setTime(data.getJSONObject("message").getLong("date"));
-
-                            break;
-                        case "photo":
-                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_PHOTO;
-                            baseMessage.setUri(Uri.parse(Constants.BASE_URL_IMAGE + data.getJSONObject("message").getString("message")));
-                            baseMessage.setTime(data.getJSONObject("message").getLong("date"));
-                            break;
-                        case "video":
-                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_VIDEO;
-                            baseMessage.setUri(Uri.parse(Constants.BASEURL_VIDEO_TEMP + data.getJSONObject("message").getString("message")));
-                            baseMessage.setTime(data.getJSONObject("message").getLong("date"));
-                            break;
-                    }
-                    adapter.addMessage(baseMessage);
-                    recyclerView.scrollToPosition(adapter.getItemCount()-1);
-                }
-
-            }
-
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
+//        Log.d("ChatActivity", "IsInBackground = " + isInBackGround);
+//        try{
+//            if (isInBackGround){
+//                if (data.getString("chatId").equals(app.getDialogID())){
+//                    BaseMessage baseMessage = new BaseMessage();
+//                    switch (data.getJSONObject("message").getString("type")){
+//                        case "text":
+//                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
+//                            baseMessage.setMessage(data.getJSONObject("message").getString("message"));
+//                            baseMessage.setTime(data.getJSONObject("message").getLong("date"));
+//
+//                            break;
+//                        case "photo":
+//                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_PHOTO;
+//                            baseMessage.setUri(Uri.parse(Constants.BASE_URL_IMAGE + data.getJSONObject("message").getString("message")));
+//                            baseMessage.setTime(data.getJSONObject("message").getLong("date"));
+//                            break;
+//                        case "video":
+//                            baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_VIDEO;
+//                            baseMessage.setUri(Uri.parse(Constants.BASEURL_VIDEO_TEMP + data.getJSONObject("message").getString("message")));
+//                            baseMessage.setTime(data.getJSONObject("message").getLong("date"));
+//                            break;
+//                    }
+//                    adapter.addMessage(baseMessage);
+//                    recyclerView.scrollToPosition(adapter.getItemCount()-1);
+//                }
+//
+//            }
+//
+//        }catch (JSONException e){
+//            e.printStackTrace();
+//        }
     });
 
 
@@ -648,6 +663,7 @@ public class ChatActivity extends AppCompatActivity
 
     private Emitter.Listener authOk = args -> ChatActivity.this.runOnUiThread(() -> {
         Log.d(TAG, "AuthOK: called!!");
+        authOKFlag = true;
         JSONObject data = new JSONObject();
         try {
             Log.d("", "enteringDialog: " + data.toString());

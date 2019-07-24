@@ -227,6 +227,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         super.onDestroy();
         //test
         offSocket();
+        mSocket.disconnect();
         if (mSocket.hasListeners("newMessage"))
             mSocket.off("newMessage");
     }
@@ -259,6 +260,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         //mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectedError);
         mSocket.on(Socket.EVENT_CONNECT, onConnected);
         mSocket.on(Socket.EVENT_DISCONNECT, ondisconnect);
+        //offSocket();
         onSocket();
         if (mSocket.connected()) {
             Log.d(TAG, "Connected !!");
