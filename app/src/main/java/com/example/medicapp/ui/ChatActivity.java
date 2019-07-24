@@ -395,6 +395,8 @@ public class ChatActivity extends AppCompatActivity
         mSocket.emit("exitFromChat", new JSONObject());
         isInBackGround = true;
         inited = false;
+        offSocket();
+        mSocket.off("newMessage", newMessageChat);
         setEnabledProgressBar(false);
         mSocket.disconnect();
     }
@@ -404,8 +406,6 @@ public class ChatActivity extends AppCompatActivity
     protected void onDestroy(){
         super.onDestroy();
         Log.d(TAG, "onDestroy: Called ______________________________________________________");
-        offSocket();
-        mSocket.off("newMessage", newMessageChat);
         if (progressDialog!=null)
             progressDialog.dismiss();
     }
@@ -510,8 +510,8 @@ public class ChatActivity extends AppCompatActivity
                     baseMessage.setUri(Uri.parse(Constants.BASE_URL_IMAGE + data.getJSONObject("message").getString("message")));
                     break;
                 case "video":
-                    baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECIVER;
-                    baseMessage.setMessage(Constants.BASEURL_VIDEO_TEMP + data.getJSONObject("message").getString("message"));
+                    baseMessage.messageType = BaseMessage.MESSAGE_TYPE_RECEIVER_VIDEO;
+                    baseMessage.setUri(Uri.parse(Constants.BASEURL_VIDEO_TEMP + data.getJSONObject("message").getString("message")));
                     break;
             }
             String author = data.getJSONObject("message").getString("author");

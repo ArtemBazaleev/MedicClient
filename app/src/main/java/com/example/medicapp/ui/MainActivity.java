@@ -249,7 +249,14 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
             mSocket.on("error-pipe",error_pipe);
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (app.getmToken().equals("") || app.getmUserID().equals("")){
+            Log.d(TAG, "onResume: emptyData ------------------------------------------------");
+            finish();
+        }
+    }
 
     ///test
 
