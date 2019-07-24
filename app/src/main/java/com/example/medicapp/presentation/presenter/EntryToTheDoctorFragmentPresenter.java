@@ -49,18 +49,13 @@ public class EntryToTheDoctorFragmentPresenter extends MvpPresenter<IEntryToTheD
     }
 
     public void onNameChanged(String name){
-        if (name == null)
-            return;
-        if (name.equals(""))
-            getViewState().setActiveSubmitBtn(false);
-        else {
+        if (name != null)
             this.name = name;
-            getViewState().setActiveSubmitBtn(true);
-        }
     }
 
     public void onSurnameChanged(String family){
-        this.family = family;
+        if (family != null)
+            this.family = family;
     }
 
     public void onMiddleNameChanged(String middleName){

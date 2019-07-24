@@ -29,4 +29,5 @@
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="preview">Preview</string>
+    <string name="exit"><u>Выход</u></string>
 </resources>

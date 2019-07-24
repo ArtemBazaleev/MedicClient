@@ -122,4 +122,10 @@ public class DataApiHelper {
         return api.requestMoreMessages(idAndToken, id, new MoreMessagesBody(count));
     }
 
+    public Observable<Response<ResponseBody>> logOut(String token){
+        Retrofit retrofit = provideRetrofit();
+        DataApi api= retrofit.create(DataApi.class);
+        return api.logOut(new LogOutBody(token));
+    }
+
 }

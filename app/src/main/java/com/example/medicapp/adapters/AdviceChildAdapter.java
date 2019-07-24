@@ -62,9 +62,11 @@ public class AdviceChildAdapter extends RecyclerView.Adapter<AdviceChildAdapter.
         private ImageView imageView;
         private String imageUrl;
         private String videoUrl;
+        private ImageView imagePlay;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView= itemView.findViewById(R.id.imageView3);
+            imagePlay = itemView.findViewById(R.id.play_image_advice);
             imageView.setOnClickListener(this::onClick);
         }
 
@@ -88,6 +90,9 @@ public class AdviceChildAdapter extends RecyclerView.Adapter<AdviceChildAdapter.
         public void bind(String image, String video) {
             imageUrl = image;
             this.videoUrl = video;
+            if (mode == AdviceModel.MODE_IMAGES)
+                imagePlay.setVisibility(View.GONE);
+            else imagePlay.setVisibility(View.VISIBLE);
             Glide.with(mContext)
                     .load(Constants.BASE_URL_IMAGE + imageUrl)
                     .into(imageView);

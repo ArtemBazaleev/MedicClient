@@ -161,7 +161,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
         SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
         SentMessageHolder(View itemView) {
             super(itemView);
             messageText =  itemView.findViewById(R.id.text_message_body);
@@ -170,10 +169,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(BaseMessage message) {
             messageText.setText(message.getMessage());
-
-            // Format the stored timestamp into a readable String using method.
-
-            //calendar.setTime(new Date(message.getTime()));
+            Calendar calendar = Calendar.getInstance();
             if (message.getTime() != 0L)
                 calendar.setTime(new Date(message.getTime()));
             String strDate = mdformat.format(calendar.getTime());
@@ -185,7 +181,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         TextView messageText, timeText, nameText;
         CircleImageView profileImage;
         SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
         ReceivedMessageHolder(View itemView) {
             super(itemView);
             messageText =  itemView.findViewById(R.id.text_message_body);
@@ -196,8 +191,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(BaseMessage message) {
             messageText.setText(message.getMessage());
-            // Format the stored timestamp into a readable String using method.
-            calendar.setTime(new Date(message.getTime()));
+            Calendar calendar = Calendar.getInstance();
+            if (message.getTime() != 0L)
+                calendar.setTime(new Date(message.getTime()));
             String strDate = mdformat.format(calendar.getTime());
             timeText.setText(strDate);
             nameText.setText(message.getFrom());
@@ -227,7 +223,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 playBtn.setVisibility(View.VISIBLE);
             else playBtn.setVisibility(View.GONE);
 
-            calendar.setTime(new Date(message.getTime()));
+            Calendar calendar = Calendar.getInstance();
+            if (message.getTime() != 0L)
+                calendar.setTime(new Date(message.getTime()));
             String strDate = mdformat.format(calendar.getTime());
             time.setText(strDate);
         }
@@ -249,7 +247,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         ImageView playBtn;
         private TextView time;
         SimpleDateFormat mdformat = new SimpleDateFormat("MM.dd HH:mm", Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
         private BaseMessage message;
         SentMessageImageHolder(@NonNull View view) {
             super(view);
@@ -281,7 +278,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 playBtn.setVisibility(View.VISIBLE);
             else playBtn.setVisibility(View.GONE);
 
-            if (message.getTime()== 0L)
+            Calendar calendar = Calendar.getInstance();
+            if (message.getTime() != 0L)
                 calendar.setTime(new Date(message.getTime()));
             String strDate = mdformat.format(calendar.getTime());
             time.setText(strDate);

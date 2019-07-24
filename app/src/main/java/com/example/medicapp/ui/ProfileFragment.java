@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -24,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.medicapp.App;
 import com.example.medicapp.R;
 import com.example.medicapp.model.ProfileModel;
+import com.example.medicapp.model.SecuredSharedPreferences;
 import com.example.medicapp.presentation.presenter.ProfileFragmentPresenter;
 import com.example.medicapp.presentation.view.IProfileFragmentView;
 
@@ -39,7 +42,8 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
 
     @BindView(R.id.profile_name) EditText nameTxt;
     @BindView(R.id.profile_surname) EditText surname;
-    @BindView(R.id.profile_image) CircleImageView profileImage;
+    @BindView(R.id.profile_image)
+    ImageView profileImage;
     @BindView(R.id.profile_age_edittext) EditText ageEditText;
     @BindView(R.id.profile_weight_edittext) EditText weightEditText;
     @BindView(R.id.profile_height_edittext) EditText heightEditText;
@@ -48,6 +52,7 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
     @BindView(R.id.profile_radiogroup_lazy) RadioGroup radioGroupLazy;
     @BindView(R.id.profile_radiogroup_sport) RadioGroup radioGroupSport;
     @BindView(R.id.progressBar2) ProgressBar progressBar;
+    @BindView(R.id.exit) TextView exit;
 
 
     @InjectPresenter
@@ -56,7 +61,11 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
     @ProvidePresenter
     ProfileFragmentPresenter providePresenter(){
         App app = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
-        return new ProfileFragmentPresenter(app.getmToken(), app.getmUserID());
+        return new ProfileFragmentPresenter(
+                app.getmToken(),
+                app.getmUserID(),
+                new SecuredSharedPreferences(Objects.requireNonNull(getContext()))
+        );
     }
 
     public ProfileFragment() {
@@ -143,6 +152,7 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
         radioGroupLazy.setOnCheckedChangeListener(radioGroupListener);
         radioGroupSex.setOnCheckedChangeListener(radioGroupListener);
         radioGroupSport.setOnCheckedChangeListener(radioGroupListener);
+        exit.setOnClickListener(l-> presenter.onExitClicked());
         //profileImage.setOnClickListener(l->presenter.onPhotoClicked());
     }
 //MVP

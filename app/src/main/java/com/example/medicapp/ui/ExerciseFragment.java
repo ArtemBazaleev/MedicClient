@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 
@@ -36,7 +37,7 @@ public class ExerciseFragment extends MvpAppCompatFragment implements IOnLoadMor
     }
     @BindView(R.id.tab_layout) TabLayout tabLayout;
     @BindView(R.id.viewPager) ViewPager viewPager;
-    @BindView(R.id.buttonAdvice) Button advicesBtn;
+    @BindView(R.id.buttonAdvice) ImageButton advicesBtn;
 
 
     @InjectPresenter

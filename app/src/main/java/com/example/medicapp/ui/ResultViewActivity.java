@@ -214,13 +214,13 @@ public class ResultViewActivity extends AppCompatActivity {
 
 
         rotateBtn.setOnClickListener(l-> { //changing orientation
-            int w = constraintContent.getWidth();
-            int h = constraintContent.getHeight();
-            constraintContent.setRotation(rotation+=90);
-            ViewGroup.LayoutParams lp = constraintContent.getLayoutParams();
+            int w = bigImageView.getWidth();
+            int h = bigImageView.getHeight();
+            bigImageView.setRotation(rotation+=90);
+            ViewGroup.LayoutParams lp = bigImageView.getLayoutParams();
             lp.height = w;
             lp.width = h;
-            constraintContent.requestLayout();
+            bigImageView.requestLayout();
         });
 
     }

@@ -1,6 +1,7 @@
 package com.example.medicapp.networking;
 
 
+import com.example.medicapp.networking.data.LogOutBody;
 import com.example.medicapp.networking.data.MoreMessagesBody;
 import com.example.medicapp.networking.data.ProfileBody;
 import com.example.medicapp.networking.data.ReservationBody;
@@ -82,5 +83,10 @@ public interface DataApi {
             @Header("Cookie") String tokenAndId,
             @Path("patientID") String userID,
             @Body MoreMessagesBody body
+    );
+
+    @POST("auth/logout")
+    Observable<Response<ResponseBody>> logOut(
+        @Body LogOutBody body
     );
 }

@@ -2,16 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@mipmap/record_icon"
-        android:title="@string/appointment_to_the_doctor" />
-
-    <item
-        android:id="@+id/navigation_chat"
-        android:icon="@mipmap/chat_icon"
-        android:title="@string/chat" />
-
-    <item
         android:id="@+id/navigation_exercise"
         android:icon="@mipmap/sport_icon"
         android:title="@string/exercises" />
@@ -19,7 +9,14 @@
         android:id="@+id/navigation_results"
         android:icon="@mipmap/results_icon"
         android:title="@string/analyzes"  />
-
+    <item
+        android:id="@+id/navigation_chat"
+        android:icon="@mipmap/chat_icon"
+        android:title="@string/chat" />
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@mipmap/record_icon"
+        android:title="@string/appointment_to_the_doctor" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@mipmap/profile_icon"

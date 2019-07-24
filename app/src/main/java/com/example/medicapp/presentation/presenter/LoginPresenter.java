@@ -42,6 +42,10 @@ public class LoginPresenter extends MvpPresenter<ILoginView> {
     }
 
     public void onCreate(){
+        login = preferences.getLogin();
+        password = preferences.getPassword();
+        if (!login.equals("") && !password.equals(""))
+            onBtnLoginClicked();
 //        if (!preferences.getToken().equals(""))
 //            getViewState().startMainActivity(preferences.getToken(), preferences.getUserID());
     }

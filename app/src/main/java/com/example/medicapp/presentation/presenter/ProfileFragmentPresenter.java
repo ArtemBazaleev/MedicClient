@@ -2,10 +2,12 @@ package com.example.medicapp.presentation.presenter;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.model.ProfileModel;
+import com.example.medicapp.model.SecuredSharedPreferences;
 import com.example.medicapp.networking.DataApi;
 import com.example.medicapp.networking.data.DataApiHelper;
 import com.example.medicapp.presentation.view.IProfileFragmentView;
@@ -27,14 +29,16 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
     private String token = "";
     private String userID = "";
     private DataApiHelper dataApiHelper;
-    DecimalFormat df = new DecimalFormat("#.##");
+    private DecimalFormat df = new DecimalFormat("#.##");
     private CompositeDisposable disposables = new CompositeDisposable();
+    private SecuredSharedPreferences preferences;
 
-    public ProfileFragmentPresenter(String token, String userID){
+    public ProfileFragmentPresenter(String token, String userID, SecuredSharedPreferences preferences){
         this.token = token;
         this.userID = userID;
         profile = new ProfileModel();
         dataApiHelper = new DataApiHelper();
+        this.preferences = preferences;
     }
 
     public void onViewCreated(){
@@ -136,5 +140,25 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
             return;
         }
         getViewState().setEnabledSubmitBtn(true);
+    }
+
+    public void onExitClicked(){
+        Disposable d =  dataApiHelper.logOut(token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    if (responseBodyResponse.isSuccessful()){
+                        preferences.setLogin("");
+                        preferences.setPassword("");
+                        getViewState().startLoginActivityAndClearStack();
+                    }else{
+                        preferences.setLogin("");
+                        preferences.setPassword("");
+                        getViewState().showToastyMessage("Ошибка авторизации, попробуйте перезайти");
+                        getViewState().startLoginActivityAndClearStack();
+                    }
+                }, throwable -> {
+                    getViewState().showToastyMessage("Error, try later");
+                });
     }
 }

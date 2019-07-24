@@ -27,10 +27,12 @@ public class App extends Application implements ITimerSms {
     private String mUserID = "";
     private boolean inited = false;
     private Vibrator vibrator;
+    private String dialogID = "";
+
     @Override
     public void onCreate() {
         super.onCreate();
-        //initSocket();
+        initSocket();
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
@@ -41,16 +43,24 @@ public class App extends Application implements ITimerSms {
     public void initSocket(){
         if (inited)
             return;
-        Log.d("Application", "initSocket: Called !!");
+        Log.d("Application", "initSocket: called!");
         try {
             IO.Options mOptions = new IO.Options();
             mOptions.path = "/socstream/";
             mOptions.secure = false;
+            mOptions.forceNew = true; //added
             Log.d("test", "initSocket: " + mOptions.toString());
             mSocket = IO.socket(Constants.BASE_SOCKET_URL, mOptions);
             inited = true;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void forceInit(){
+        if (!mSocket.connected()){
+            inited = false;
+            initSocket();
         }
     }
 
@@ -113,10 +123,17 @@ public class App extends Application implements ITimerSms {
 
     public void vibrate(){
         if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+            vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
-            vibrator.vibrate(200);
+            vibrator.vibrate(300);
         }
     }
 
+    public String getDialogID() {
+        return dialogID;
+    }
+
+    public void setDialogID(String dialogID) {
+        this.dialogID = dialogID;
+    }
 }

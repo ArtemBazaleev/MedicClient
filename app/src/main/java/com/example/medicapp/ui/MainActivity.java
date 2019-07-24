@@ -54,6 +54,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
     private Socket mSocket;
     private boolean inited = false;
     private boolean hasChatDialog = false;
+    private boolean isInBackground = true;
 
     @InjectPresenter
     MainActivityPresenter presenter;
@@ -69,7 +70,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
                         return true;
                     case R.id.navigation_chat:
                         presenter.onChatClicked();
-                        return hasChatDialog;
+                        return false;
                     case R.id.navigation_results:
                         presenter.onResultsClicked();
                         return true;
@@ -81,6 +82,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
             };
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +92,8 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         presenter.onCreate();
         app = (App)getApplication();
-
+        app.setDialogID("");
+        //initSocket();
     }
 
 
@@ -150,8 +153,10 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
     @Override
     public void startChatActivity() {
-        if (hasChatDialog)
+        if (hasChatDialog) {
+            changeChatIconNoMessages();
             startActivity(new Intent(MainActivity.this, ChatActivity.class));
+        }
         else  showToastyMessage("Диалог с врачем не обнаружен");
     }
 
@@ -164,10 +169,10 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         resultFragment = new ResultsFragment();
         fm.beginTransaction()
                 .add(R.id.fragment_container, entryToTheDoctorFragment,"1")
+                .hide(entryToTheDoctorFragment)
                 .commit();
         fm.beginTransaction()
                 .add(R.id.fragment_container, exerciseFragment, "2")
-                .hide(exerciseFragment)
                 .commit();
         fm.beginTransaction()
                 .add(R.id.fragment_container, resultFragment, "3")
@@ -177,7 +182,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
                 .add(R.id.fragment_container, profileFragment, "4")
                 .hide(profileFragment)
                 .commit();
-        activeFragment = entryToTheDoctorFragment;
+        activeFragment = exerciseFragment;
     }
 
     @Override
@@ -197,89 +202,51 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Kenilab";
-            String description = "MedicApp";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    private void showNotif(String title, String contentTitle, String contentText){
-        Intent intent = new Intent(this, ChatActivity.class);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(intent);
-
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle(title)
-                .setContentText(contentTitle)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(contentText))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setSound(alarmSound)
-                .setAutoCancel(true);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notificationId, builder.build());
-        notificationId++;
-    }
-
     @Override
     protected void onStart() {
         Log.d(TAG, "onStart: called");
         super.onStart();
-        if (inited)
-            return;
+        isInBackground = false;
         if (app.getmToken().equals("") || app.getmUserID().equals("")){
             finish();
         }
-        app.initSocket();
         initSocket();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
+        isInBackground = true;
         Log.d(TAG, "onPause: _______________________________________________________________");
         offSocket();
+//        mSocket.disconnect();
+        Log.d(TAG, "onPause: soket:" + mSocket.connected());
     }
     @Override
     protected void onDestroy(){
         super.onDestroy();
-
         //test
         offSocket();
-        //test
-        App app = (App) getApplication();
-        app.disconnect();
+        if (mSocket.hasListeners("newMessage"))
+            mSocket.off("newMessage");
     }
 
     private void offSocket(){
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectedError);
+        mSocket.off(Socket.EVENT_CONNECT, onConnected);
         mSocket.off("authOk",authOk);
-        //mSocket.off("enteredDialog",enteredDialog);
-        mSocket.off("messageReceive",messageReceive);
-        mSocket.off("leavedDialog",leavedDialog);
-        mSocket.off("newMessage",newMessage);
-        mSocket.off("messageListReceive",messageListReceive);
+        //mSocket.off("newMessage",newMessage);
         mSocket.off("error-pipe",error_pipe);
         Log.d(TAG, "offSocket: called");
-        mSocket.disconnect();
-        inited = false;
     }
-
+    private void onSocket(){
+        if (!mSocket.hasListeners("authOk"))
+            mSocket.on("authOk",authOk);
+        if (!mSocket.hasListeners("newMessage"))
+            mSocket.on("newMessage",newMessage);
+        if (!mSocket.hasListeners("error-pipe"))
+            mSocket.on("error-pipe",error_pipe);
+    }
 
 
 
@@ -287,28 +254,30 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
 
 
     private void initSocket() {
+        app.initSocket();
         mSocket = app.getmSocket();
-        if (mSocket.connected())
-            Toast.makeText(this, "Connected!!", Toast.LENGTH_SHORT).show();
-        else mSocket.connect();
-        JSONObject data = new JSONObject();
-        try {
-            data.put("userId", app.getmUserID());
-            data.put("token", app.getmToken());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectedError);
+        //mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectedError);
         mSocket.on(Socket.EVENT_CONNECT, onConnected);
-        mSocket.on("authOk", authOk);
-        mSocket.on("messageReceive",messageReceive);
-        mSocket.on("leavedDialog",leavedDialog);
-        mSocket.on("newMessage",newMessage);
-        mSocket.on("messageListReceive", messageListReceive);
-        mSocket.on("error-pipe", error_pipe);
-        Log.d("", "initSocket: " + data.toString());
-        mSocket.emit("auth", data);
-        inited = true;
+        mSocket.on(Socket.EVENT_DISCONNECT, ondisconnect);
+        onSocket();
+        if (mSocket.connected()) {
+            Log.d(TAG, "Connected !!");
+            onSocket();
+            JSONObject data = new JSONObject();
+            try {
+                data.put("userId", app.getmUserID());
+                data.put("token", app.getmToken());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("Emitting...", "initSocket: " + data.toString());
+            mSocket.emit("auth", data);
+        }
+        else{
+            mSocket.connect();
+        }
+        Log.d(TAG, "initSocket soket: " + mSocket.connected());
     }
 
 
@@ -319,60 +288,71 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivityV
         Log.d(TAG,"error_pipe  "+ data.toString());
     });
 
-    private Emitter.Listener messageListReceive = args -> MainActivity.this.runOnUiThread(() -> {
-        JSONObject data = (JSONObject) args[0];
-        Log.d(TAG,"messageListReceive  "+ data.toString());
-    });
-
     private Emitter.Listener newMessage = args -> MainActivity.this.runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
+        if (isInBackground)
+            return;
         Log.d(TAG,"newMessage  "+ data.toString());
         try {
-            createNotificationChannel();
             app.vibrate();
-            showNotif("Врач","Сообщение:", data.getJSONObject("message").getString("message"));
+            changeChatIconHaveMessage();
         } catch (Exception e) {
             e.printStackTrace();
        }
     });
 
-    private Emitter.Listener leavedDialog = args -> MainActivity.this.runOnUiThread(() -> {
-    });
-
-    private Emitter.Listener messageReceive  = args -> MainActivity.this.runOnUiThread(() -> {
-        JSONObject data = (JSONObject) args[0];
-        Log.d(TAG,"messageReceive " + data.toString());
-
-    });
-
+    private void changeChatIconHaveMessage() {
+        navigation.getMenu().findItem(R.id.navigation_chat).setIcon(R.drawable.ic_lightbulb);
+    }
+    private void changeChatIconNoMessages(){
+        navigation.getMenu().findItem(R.id.navigation_chat).setIcon(R.mipmap.chat_icon);
+    }
 
     private Emitter.Listener authOk = args -> MainActivity.this.runOnUiThread(() -> {
+        Log.d(TAG, "AuthOK: called!!");
         try {
             JSONObject data = (JSONObject) args[0];
             Log.d( TAG ,"AuthOk: " + data.toString());
-            JSONObject emitObj = new JSONObject();
             if (!data.getJSONArray("dialogs").getJSONObject(0).has("id")) { // NO CHAT
                 hasChatDialog = false;
                 return;
             }
-//            if (data.getJSONArray("dialogs").getJSONObject(0).has("unreadMessages"))
-//                Toast.makeText(this, data.getJSONArray("dialogs").getJSONObject(0).getInt("unreadMessages"), Toast.LENGTH_SHORT).show();
+            if (data.getJSONArray("dialogs").getJSONObject(0).has("unreadMessages")) {
+                if (data.getJSONArray("dialogs").getJSONObject(0).getInt("unreadMessages") != 0)
+                    changeChatIconHaveMessage();
+                else changeChatIconNoMessages(); // на всякий случай
+            }
+            else changeChatIconNoMessages();
             String dialogID = data.getJSONArray("dialogs").getJSONObject(0).getString("id");
-            emitObj.put("dialogId", dialogID);
+            app.setDialogID(dialogID);
             hasChatDialog = true;
-            Log.d("", data.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     });
 
     private Emitter.Listener onConnected = args -> MainActivity.this.runOnUiThread(() -> {
+        Log.d(TAG, "onConnected: called");
+        Log.d(TAG, "onConnected socket: "+ mSocket.connected());
+        JSONObject data = new JSONObject();
+        try {
+            data.put("userId", app.getmUserID());
+            data.put("token", app.getmToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        Log.d("Emitting...", "initSocket: " + data.toString());
+        mSocket.emit("auth", data);
     });
 
     private Emitter.Listener onConnectedError = args -> MainActivity.this.runOnUiThread(() -> {
-
+        Log.d(TAG, "onConnectedError: called");
+        //Toast.makeText(this, "ConnectionError", Toast.LENGTH_SHORT).show();
     });
 
 
+    private Emitter.Listener ondisconnect = args -> MainActivity.this.runOnUiThread(() -> {
+        Log.d(TAG, "ondisconnect: called");
+    });
 }

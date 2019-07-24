@@ -12,6 +12,7 @@ public class MainActivityPresenter extends MvpPresenter<IMainActivityView> {
     }
 
     public void onChatClicked(){
+        //getViewState().setExerciseFragment();
         getViewState().startChatActivity();
     }
 
