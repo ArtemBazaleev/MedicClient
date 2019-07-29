@@ -32,7 +32,7 @@ public class App extends Application implements ITimerSms {
     @Override
     public void onCreate() {
         super.onCreate();
-        initSocket();
+        //initSocket();
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
@@ -60,6 +60,10 @@ public class App extends Application implements ITimerSms {
     public void forceInit(){
         if (!mSocket.connected()){
             inited = false;
+            mSocket.off();
+            mSocket.close();
+            mSocket.disconnect();
+            mSocket = null;
             initSocket();
         }
     }

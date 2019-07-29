@@ -132,7 +132,7 @@
                 android:background="@null"
                 android:maxLines="1"
                 android:maxLength="15"
-                android:hint="имя"
+                android:hint="Имя"
                 android:inputType="textPersonName"
                 android:textColor="@android:color/background_light"
                 android:textSize="24sp"
@@ -148,7 +148,7 @@
                 android:maxLines="1"
                 android:maxLength="15"
                 android:fontFamily="@font/sf_compact_rounded_bold"
-                android:hint="фамилия"
+                android:hint="Фамилия"
                 android:inputType="textPersonName"
                 android:textColor="@android:color/background_light"
                 android:textSize="24sp"
@@ -383,7 +383,6 @@
                 android:textAllCaps="false"
                 android:textColor="#fafafa"
                 android:enabled="false"
-
                 app:layout_constraintEnd_toEndOf="@+id/constraintLayout7"
                 app:layout_constraintStart_toStartOf="@+id/textView22"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout7"
@@ -402,6 +401,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:focusable="true" />
+
+            <Button
+                android:id="@+id/payment_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/shape_round_gradient_btn"
+                android:fontFamily="@font/sf_compact_rounded_bold"
+                android:text="Покупки"
+                android:textColor="#fafafa"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toTopOf="@+id/textView13"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>

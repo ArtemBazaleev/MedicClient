@@ -161,4 +161,8 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
                     getViewState().showToastyMessage("Error, try later");
                 });
     }
+
+    public void onPaymentClicked() {
+        getViewState().startPaymentActivity();
+    }
 }

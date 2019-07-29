@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 
 import com.example.medicapp.R;
+import com.halilibo.bettervideoplayer.BetterVideoCallback;
+import com.halilibo.bettervideoplayer.BetterVideoPlayer;
 //import com.example.medicapp.networking.response.exercise.Video;
 //import com.halilibo.bettervideoplayer.BetterVideoCallback;
 //import com.halilibo.bettervideoplayer.BetterVideoPlayer;
@@ -20,74 +22,75 @@ import butterknife.ButterKnife;
 
 public class VideoViewActivity extends AppCompatActivity {
 
-//    @BindView(R.id.player) BetterVideoPlayer player;
-//    @BindView(R.id.rootVideoView)
-//    ConstraintLayout root;
-//    public static final String VIDEO =  "VIDEO_URL";
+    @BindView(R.id.player)
+    BetterVideoPlayer player;
+    @BindView(R.id.rootVideoView)
+    ConstraintLayout root;
+    public static final String VIDEO =  "VIDEO_URL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_view);
         ButterKnife.bind(this);
-//        if (getIntent().getExtras()!= null)
-//            player.setSource(Uri.parse(getIntent().getExtras().getString(VIDEO)));
-//        else player.setSource(Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
-//        player.enableSwipeGestures();
-//        root.setOnClickListener(l->{
-//            if (player.isControlsShown())
-//            {
-//                hideSystemUI();
-//                player.hideControls();
-//            }
-//            else {
-//                player.showControls();
-//                hideSystemUI();
-//            }
-//        });
-//        player.setCallback(new BetterVideoCallback() {
-//            @Override
-//            public void onStarted(BetterVideoPlayer player) {
-//
-//            }
-//
-//            @Override
-//            public void onPaused(BetterVideoPlayer player) {
-//
-//            }
-//
-//            @Override
-//            public void onPreparing(BetterVideoPlayer player) {
-//
-//            }
-//
-//            @Override
-//            public void onPrepared(BetterVideoPlayer player) {
-//
-//            }
-//
-//            @Override
-//            public void onBuffering(int percent) {
-//
-//            }
-//
-//            @Override
-//            public void onError(BetterVideoPlayer player, Exception e) {
-//                Toast.makeText(VideoViewActivity.this,"Error, try later", Toast.LENGTH_SHORT).show();
-//                VideoViewActivity.this.finish();
-//            }
-//
-//            @Override
-//            public void onCompletion(BetterVideoPlayer player) {
-//
-//            }
-//
-//            @Override
-//            public void onToggleControls(BetterVideoPlayer player, boolean isShowing) {
-//
-//            }
-//        });
-        //player.getToolbar().setOnClickListener(l-> hideSystemUI());
+        if (getIntent().getExtras()!= null)
+            player.setSource(Uri.parse(getIntent().getExtras().getString(VIDEO)));
+        else player.setSource(Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
+        player.enableSwipeGestures();
+        root.setOnClickListener(l->{
+            if (player.isControlsShown())
+            {
+                hideSystemUI();
+                player.hideControls();
+            }
+            else {
+                player.showControls();
+                hideSystemUI();
+            }
+        });
+        player.setCallback(new BetterVideoCallback() {
+            @Override
+            public void onStarted(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onPaused(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onPreparing(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onPrepared(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onBuffering(int percent) {
+
+            }
+
+            @Override
+            public void onError(BetterVideoPlayer player, Exception e) {
+                Toast.makeText(VideoViewActivity.this,"Error, try later", Toast.LENGTH_SHORT).show();
+                VideoViewActivity.this.finish();
+            }
+
+            @Override
+            public void onCompletion(BetterVideoPlayer player) {
+
+            }
+
+            @Override
+            public void onToggleControls(BetterVideoPlayer player, boolean isShowing) {
+
+            }
+        });
+
     }
 
     @Override
@@ -131,13 +134,13 @@ public class VideoViewActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        player.pause();
+        player.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        player.start();
+        player.start();
     }
 
 }

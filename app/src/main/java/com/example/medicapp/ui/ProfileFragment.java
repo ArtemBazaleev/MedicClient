@@ -53,6 +53,7 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
     @BindView(R.id.profile_radiogroup_sport) RadioGroup radioGroupSport;
     @BindView(R.id.progressBar2) ProgressBar progressBar;
     @BindView(R.id.exit) TextView exit;
+    @BindView(R.id.payment_btn) Button paymentBtn;
 
 
     @InjectPresenter
@@ -153,6 +154,7 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
         radioGroupSex.setOnCheckedChangeListener(radioGroupListener);
         radioGroupSport.setOnCheckedChangeListener(radioGroupListener);
         exit.setOnClickListener(l-> presenter.onExitClicked());
+        paymentBtn.setOnClickListener(l-> presenter.onPaymentClicked());
         //profileImage.setOnClickListener(l->presenter.onPhotoClicked());
     }
 //MVP
@@ -249,5 +251,11 @@ public class ProfileFragment extends MvpAppCompatFragment implements IProfileFra
         Intent i = new Intent(getContext(), LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
+    }
+
+    @Override
+    public void startPaymentActivity() {
+        Intent i = new Intent(getContext(), PaymentActivity.class);
+        Objects.requireNonNull(getActivity()).startActivity(i);
     }
 }

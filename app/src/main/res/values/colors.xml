@@ -16,4 +16,5 @@
     <color name="color_white">#000000</color>
 
     <color name="black_overlay">#66464646</color>
+    <color name="black_overlay_bnv">#B2464646</color>
 </resources>
