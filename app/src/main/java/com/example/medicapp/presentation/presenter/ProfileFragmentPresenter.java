@@ -131,14 +131,14 @@ public class ProfileFragmentPresenter extends MvpPresenter<IProfileFragmentView>
     }
 
     private void checkFilledData(){
-        if (profile.getName().equals("")) {
-            getViewState().setEnabledSubmitBtn(false);
-            return;
-        }
-        if (profile.getSurname().equals("")) {
-            getViewState().setEnabledSubmitBtn(false);
-            return;
-        }
+//        if (profile.getName().equals("")) {
+//            getViewState().setEnabledSubmitBtn(false);
+//            return;
+//        }
+//        if (profile.getSurname().equals("")) {
+//            getViewState().setEnabledSubmitBtn(false);
+//            return;
+//        }
         getViewState().setEnabledSubmitBtn(true);
     }
 

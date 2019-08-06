@@ -165,8 +165,8 @@ public class BackBoneViewActivity extends MvpAppCompatActivity  {
                 if (response.isSuccessful()){
                     final Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
                     new Handler(Looper.getMainLooper()).post(() ->{
-                        onLoadNext();
                         bitmaps.add(bitmap);
+                        onLoadNext();
                     });
                 }else {
                     //Handle the error

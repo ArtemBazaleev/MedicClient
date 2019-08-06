@@ -51,7 +51,10 @@ public class ResultsFragmentPresenter extends MvpPresenter<IResultsFragmentView>
     }
 
     public void onResultClicked(ResultModel model){
-        getViewState().startActivityResultView(model);
+        if (model.getType() == ResultModel.TYPE_CONCLUSION)
+            getViewState().startConclusionActivity(model.getDesc());
+        else
+            getViewState().startActivityResultView(model);
     }
 
     public void onRefresh() {

@@ -118,5 +118,12 @@ public class ResultsFragment extends MvpAppCompatFragment
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
     }
+
+    @Override
+    public void startConclusionActivity(String text) {
+        Intent i = new Intent(getContext(), ConclusionViewActivity.class);
+        i.putExtra(ConclusionViewActivity.CONCLUSION_TEXT, text);
+        startActivity(i);
+    }
     //MVP
 }

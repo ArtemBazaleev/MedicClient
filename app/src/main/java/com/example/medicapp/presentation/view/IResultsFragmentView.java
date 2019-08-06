@@ -22,4 +22,6 @@ public interface IResultsFragmentView extends MvpView {
     void hideRefreshing();
 
     void startLoginActivityAndClearStack();
+
+    void startConclusionActivity(String text);
 }

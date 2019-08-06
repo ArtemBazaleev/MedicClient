@@ -49,6 +49,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
 
     public class ResultHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ConstraintLayout constraintLayout;
+        private ConstraintLayout clicker;
         private ResultModel model;
         private TextView date;
         private TextView conclusion;
@@ -57,10 +58,11 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultHo
         ResultHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.constraintLayout5);
+            clicker = itemView.findViewById(R.id.conclusion_item_result);
             date = itemView.findViewById(R.id.textView8);
             conclusion = itemView.findViewById(R.id.text_conclusion);
             desc = itemView.findViewById(R.id.textView9);
-            constraintLayout.setOnClickListener(this);
+            clicker.setOnClickListener(this);
         }
 
         @Override

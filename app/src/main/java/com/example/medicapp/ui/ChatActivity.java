@@ -439,7 +439,7 @@ public class ChatActivity extends AppCompatActivity
                 Toast.makeText(ChatActivity.this, data.getString("message"),Toast.LENGTH_SHORT).show();
                 switch (data.getString("code")){
                     case "301":
-                        startActivity(new Intent(this, PaymentActivity.class));
+                        //startActivity(new Intent(this, PaymentActivity.class));
                         break;
                     case "403":
                         timer.cancel();
