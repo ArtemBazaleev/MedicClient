@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +83,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
                 header.setVisibility(View.VISIBLE);
                 header.setText(model.getCategory());
                 return;
+            }else{
+                cardView.setVisibility(View.VISIBLE);
+                textView.setVisibility(View.VISIBLE);
+                header.setVisibility(View.GONE);
             }
             Picasso.with(mContext)
                     .load(model.getUrlImage())

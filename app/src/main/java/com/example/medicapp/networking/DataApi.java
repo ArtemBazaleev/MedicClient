@@ -24,12 +24,18 @@ import retrofit2.http.Query;
 public interface DataApi {
 
     @GET("exercise")
-    Observable<Response<ResponseExercise>> getExercise(@Header("Cookie") String tokenAndId);
+    Observable<Response<ResponseExercise>> getExercise(
+            @Header("Cookie") String tokenAndId,
+            @Query("skip") int skip,
+            @Query("limit") int limit
+    );
 
     @GET("patient/{patientID}/exercise")
     Observable<Response<ResponseExercise>> getSuggestedExercises(
             @Header("Cookie") String tokenAndId,
-            @Path("patientID") String patientID
+            @Path("patientID") String patientID,
+            @Query("skip") int skip,
+            @Query("limit") int limit
     );
 
     @GET("patient/{patientID}/profile")

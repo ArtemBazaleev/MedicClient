@@ -1,5 +1,7 @@
 package com.example.medicapp.presentation.presenter;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.medicapp.ITimerListener;
@@ -33,6 +35,7 @@ public class RegistrationPresenter extends MvpPresenter<IRegistrationView> imple
     private boolean isTicking = false;
 
     public RegistrationPresenter(ITimerSms timerSms) {
+        Log.d("registration", "RegistrationPresenter: ");
         timer = timerSms;
         timer.setTimerListener(this);
         isTicking = timer.isTicking();
@@ -129,6 +132,7 @@ public class RegistrationPresenter extends MvpPresenter<IRegistrationView> imple
                         getViewState().hideProgressDialogWindow();
                         isLoading = false;
                         if (responseBodyResponse.isSuccessful()) {
+                            timer.stopTimer();
                             getViewState().showToastyMessage("Аккаунт зарегистрирован");
                             getViewState().startLoginActivity();
                         }

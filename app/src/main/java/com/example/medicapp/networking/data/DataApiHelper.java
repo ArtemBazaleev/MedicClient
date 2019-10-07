@@ -38,14 +38,14 @@ public class DataApiHelper {
         String idAndToken  = "token=" + token + "; " + "id=" + id;
         Retrofit retrofit = provideRetrofit();
         DataApi api = retrofit.create(DataApi.class);
-        return api.getExercise(idAndToken);
+        return api.getExercise(idAndToken, 0, 300);
     }
 
     public Observable<Response<ResponseExercise>> getSuggestedExercisec(String token, String id){
         String idAndToken  = "token=" + token + "; " + "id=" + id;
         Retrofit retrofit = provideRetrofit();
         DataApi api = retrofit.create(DataApi.class);
-        return api.getSuggestedExercises(idAndToken, id);
+        return api.getSuggestedExercises(idAndToken, id,0,300);
     }
 
     public Observable<Response<ResponseBody>> getProfile(String token, String id){
